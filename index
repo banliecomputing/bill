@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Banliecomputing - Full Technician Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f1f5f9;
+        }
+        .invoice-container {
+            background: white;
+            position: relative;
+            overflow: hidden;
+            min-height: 297mm;
+            width: 210mm;
+            margin: 0 auto;
+        }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 5rem;
+            font-weight: 900;
+            color: rgba(0, 0, 0, 0.02);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+            user-select: none;
+            text-transform: uppercase;
+        }
+        .tech-code {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+        }
+        @media (max-width: 1024px) {
+            .invoice-container { width: 100%; min-height: auto; }
+        }
+        @media print {
+            .no-print { display: none; }
+            body { background: white; padding: 0; }
+            .invoice-container { box-shadow: none; border: none; margin: 0; }
+        }
+    </style>
+</head>
+<body class="p-0">
+
+    <div class="flex flex-col lg:flex-row min-h-screen">
+        
+        <!-- PANEL FORMULIR (Kiri) -->
+        <div class="no-print lg:w-1/3 w-full bg-white border-r border-slate-200 p-6 lg:overflow-y-auto lg:h-screen shadow-xl z-20">
+            <div class="mb-6 flex justify-between items-center">
+                <h2 class="text-xl font-extrabold text-slate-800 flex items-center gap-2">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    </div>
+                    Tech Console
+                </h2>
+                <span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2 py-1 rounded">V2.5</span>
+            </div>
+
+            <div class="space-y-5">
+                <!-- Informasi Perangkat -->
+                <section class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Device & OS Info</h3>
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Merek Laptop</label>
+                            <input type="text" id="in_brand" value="ASUS" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs outline-none focus:ring-1 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Tipe/Model</label>
+                            <input type="text" id="in_model" value="ROG Zephyrus G14" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs outline-none focus:ring-1 focus:ring-indigo-500">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Edisi Windows</label>
+                        <input type="text" id="in_os" value="Windows 11 Pro 23H2" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs outline-none focus:ring-1 focus:ring-indigo-500">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">RAM</label>
+                            <input type="text" id="in_ram" value="16 GB" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Processor</label>
+                            <input type="text" id="in_cpu" value="AMD Ryzen 9" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs outline-none">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Data Lisensi -->
+                <section class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100">
+                    <h3 class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mb-3">License Identifiers</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Installation ID (IID)</label>
+                            <input type="text" id="in_iid" value="482910-221033-992810-123456" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs font-mono outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Serial Number (S/N)</label>
+                            <input type="text" id="in_sn" value="BC-MS-OFF-2021-RETAIL" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs font-mono uppercase outline-none">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Informasi Utama -->
+                <section>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">No. Invoice</label>
+                            <input type="text" id="in_no" value="#BC-RPT-992" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Tanggal</label>
+                            <input type="date" id="in_date" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs outline-none">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Item & Enkripsi -->
+                <section>
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Pricing & Billing</h3>
+                        <button onclick="addItem()" class="text-[10px] bg-indigo-600 text-white font-bold px-3 py-1 rounded hover:bg-indigo-700 transition">+ Item</button>
+                    </div>
+                    <div id="items-input-container" class="space-y-2"></div>
+                </section>
+
+                <!-- Ekspor -->
+                <section class="pt-4 border-t border-slate-100 grid grid-cols-2 gap-2">
+                    <button onclick="exportToPDF()" class="bg-rose-600 text-white py-2 rounded text-xs font-bold transition">PDF Report</button>
+                    <button onclick="exportToImage('png')" class="bg-indigo-600 text-white py-2 rounded text-xs font-bold transition">PNG Image</button>
+                    <button onclick="exportToImage('jpeg')" class="bg-emerald-600 text-white py-2 rounded text-xs font-bold transition">JPG Image</button>
+                    <button onclick="exportToTxt()" class="bg-slate-700 text-white py-2 rounded text-xs font-bold transition">TXT Log</button>
+                </section>
+            </div>
+        </div>
+
+        <!-- PRATINJAU (Kanan) -->
+        <div class="lg:w-2/3 w-full p-4 lg:p-12 lg:h-screen lg:overflow-y-auto flex justify-center">
+            <div id="billing-card" class="invoice-container shadow-2xl border border-slate-200">
+                <!-- Watermark -->
+                <div class="watermark">BANLIECOMPUTING</div>
+
+                <!-- Header -->
+                <div class="relative z-10 bg-slate-900 p-10 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-indigo-500 rounded-2xl flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold tracking-tight">BANLIE<span class="text-indigo-400">COMPUTING</span></h1>
+                            <p class="text-slate-400 text-[8px] tracking-[0.4em] mt-1 uppercase font-bold">Secure Infrastructure & Software</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <h2 class="text-xl font-extralight tracking-[0.4em] text-indigo-100 uppercase">Tech Report</h2>
+                        <p id="pv_no" class="text-indigo-400 font-mono text-sm">#BC-RPT-992</p>
+                    </div>
+                </div>
+
+                <!-- Spesifikasi Perangkat -->
+                <div class="relative z-10 p-8 border-b border-slate-100 bg-slate-50/40 grid grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-1">Hardware Information</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-[11px]">
+                                <span class="text-slate-400">Brand/Model</span>
+                                <span id="pv_device" class="text-slate-800 font-bold">ASUS ROG Zephyrus G14</span>
+                            </div>
+                            <div class="flex justify-between text-[11px]">
+                                <span class="text-slate-400">Processor</span>
+                                <span id="pv_cpu" class="text-slate-600 font-medium">AMD Ryzen 9</span>
+                            </div>
+                            <div class="flex justify-between text-[11px]">
+                                <span class="text-slate-400">RAM Capacity</span>
+                                <span id="pv_ram" class="text-slate-600 font-medium">16 GB</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-1">System Software</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-[11px]">
+                                <span class="text-slate-400">OS Edition</span>
+                                <span id="pv_os" class="text-indigo-600 font-bold">Windows 11 Pro 23H2</span>
+                            </div>
+                            <div class="flex justify-between text-[11px]">
+                                <span class="text-slate-400">Report Date</span>
+                                <span id="pv_date" class="text-slate-600 font-medium">-</span>
+                            </div>
+                            <div class="flex justify-between text-[11px]">
+                                <span class="text-slate-400">Auth Status</span>
+                                <span class="text-emerald-600 font-black">CERTIFIED</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IID & SN Area -->
+                <div class="relative z-10 px-8 py-6 flex gap-6 bg-white">
+                    <div class="flex-1 bg-slate-900 rounded-xl p-4 text-white">
+                        <h3 class="text-[8px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Installation ID</h3>
+                        <p id="pv_iid" class="font-mono text-xs tracking-tighter text-indigo-300">482910-221033-992810-123456</p>
+                    </div>
+                    <div class="w-1/3 bg-indigo-50 border border-indigo-100 rounded-xl p-4">
+                        <h3 class="text-[8px] font-black text-indigo-300 uppercase tracking-[0.2em] mb-1">Serial Number</h3>
+                        <p id="pv_sn" class="font-mono text-[10px] font-bold text-indigo-700 break-all uppercase">BC-MS-OFF-2021-RETAIL</p>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="relative z-10 px-8 py-4">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b-2 border-slate-100 text-[9px] text-slate-400 uppercase tracking-widest font-black">
+                                <th class="pb-3 text-left">Service/Product Detail</th>
+                                <th class="pb-3 text-center">Unit</th>
+                                <th class="pb-3 text-right">Tech Price</th>
+                                <th class="pb-3 text-right">Tech Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pv_table_body" class="text-[11px] text-slate-600">
+                            <!-- Items row will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Calculation Code -->
+                <div class="relative z-10 mt-auto p-8 bg-slate-50 border-t border-slate-100 flex flex-col md:flex-row justify-between items-end gap-6">
+                    <div class="text-[9px] text-slate-400 italic max-w-xs leading-relaxed">
+                        *Kode enkripsi harga hanya untuk keperluan internal teknisi Banliecomputing. Nilai numerik asli tidak ditampilkan untuk menjaga privasi operasional.
+                    </div>
+                    <div class="w-64 space-y-1 text-right">
+                        <p class="text-[8px] font-black text-slate-300 uppercase tracking-[0.3em] mb-2">Grand Total Encrypted</p>
+                        <div class="flex justify-between items-center bg-white border border-slate-200 px-4 py-2 rounded-xl">
+                            <span class="text-[10px] text-slate-400 font-bold uppercase">Code</span>
+                            <span id="pv_grand_total_code" class="text-indigo-600 font-black text-2xl tech-code">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-6 text-center text-[8px] text-slate-300 font-bold tracking-[0.4em] uppercase">
+                    Secured by Banliecomputing Advanced Tech Services &bull; Jakarta
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-900 text-white rounded-2xl text-sm font-medium opacity-0 transition-all pointer-events-none z-50"></div>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+        let items = [
+            { desc: 'Microsoft Office 2021 Retail Activation', qty: 1, price: 350000 },
+            { desc: 'System Optimization & Driver Update', qty: 1, price: 150000 }
+        ];
+
+        function encodePrice(price) {
+            if (!price || price <= 0) return "0";
+            const priceStr = price.toString();
+            const map = { '1':'A', '2':'B', '3':'C', '4':'D', '5':'E', '6':'F', '7':'G', '8':'H', '9':'I', '0':'0' };
+            let zeroCount = 0;
+            let i = priceStr.length - 1;
+            while (i >= 0 && priceStr[i] === '0') { zeroCount++; i--; }
+            const mainPart = priceStr.substring(0, priceStr.length - zeroCount);
+            let encodedMain = "";
+            for (let char of mainPart) { encodedMain += map[char] || char; }
+            if (zeroCount === 1) return encodedMain + "0";
+            if (zeroCount > 1) return encodedMain + "0^" + zeroCount;
+            return encodedMain;
+        }
+
+        function renderItemInputs() {
+            const container = document.getElementById('items-input-container');
+            container.innerHTML = '';
+            items.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'bg-slate-50 p-2 rounded-lg border border-slate-100 relative group';
+                div.innerHTML = `
+                    <button onclick="removeItem(${index})" class="absolute top-1 right-1 text-slate-300 hover:text-rose-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                    <input type="text" value="${item.desc}" oninput="updateItem(${index}, 'desc', this.value)" class="w-full bg-transparent font-bold text-[10px] mb-1 outline-none">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" value="${item.qty}" oninput="updateItem(${index}, 'qty', this.value)" class="w-full border rounded px-1.5 py-0.5 text-[10px]" placeholder="Qty">
+                        <div class="relative">
+                            <input type="number" value="${item.price}" oninput="updateItem(${index}, 'price', this.value)" class="w-full border rounded px-1.5 py-0.5 text-[10px]" placeholder="Harga">
+                            <span class="absolute right-1.5 top-0.5 text-[7px] font-bold text-indigo-400">${encodePrice(item.price)}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            updatePreview();
+        }
+
+        function addItem() { items.push({ desc: 'New Service', qty: 1, price: 0 }); renderItemInputs(); }
+        function removeItem(index) { items.splice(index, 1); renderItemInputs(); }
+        function updateItem(index, key, val) { items[index][key] = key === 'desc' ? val : parseFloat(val) || 0; updatePreview(); }
+
+        function updatePreview() {
+            const getV = (id) => document.getElementById(id).value || '-';
+            document.getElementById('pv_no').innerText = getV('in_no');
+            document.getElementById('pv_date').innerText = getV('in_date');
+            document.getElementById('pv_device').innerText = `${getV('in_brand')} ${getV('in_model')}`;
+            document.getElementById('pv_os').innerText = getV('in_os');
+            document.getElementById('pv_cpu').innerText = getV('in_cpu');
+            document.getElementById('pv_ram').innerText = getV('in_ram');
+            document.getElementById('pv_iid').innerText = getV('in_iid');
+            document.getElementById('pv_sn').innerText = getV('in_sn');
+
+            const tbody = document.getElementById('pv_table_body');
+            tbody.innerHTML = '';
+            let totalAll = 0;
+            items.forEach(item => {
+                const total = item.qty * item.price;
+                totalAll += total;
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-50">
+                        <td class="py-3 font-bold text-slate-700">${item.desc}</td>
+                        <td class="py-3 text-center">${item.qty}</td>
+                        <td class="py-3 text-right font-mono text-indigo-400">${encodePrice(item.price)}</td>
+                        <td class="py-3 text-right font-mono font-bold text-indigo-600">${encodePrice(total)}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('pv_grand_total_code').innerText = encodePrice(totalAll);
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.classList.remove('opacity-0');
+            setTimeout(() => t.classList.add('opacity-0'), 3000);
+        }
+
+        async function exportToImage(format) {
+            const el = document.getElementById('billing-card');
+            const canvas = await html2canvas(el, { scale: 2 });
+            const link = document.createElement('a');
+            link.download = `BC-TECH-REPORT.${format}`;
+            link.href = canvas.toDataURL(`image/${format === 'jpeg' ? 'jpeg' : 'png'}`);
+            link.click();
+            showToast("Berhasil simpan gambar");
+        }
+
+        async function exportToPDF() {
+            const el = document.getElementById('billing-card');
+            const canvas = await html2canvas(el, { scale: 2 });
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, (canvas.height * 210) / canvas.width);
+            pdf.save(`BC-TECH-REPORT.pdf`);
+            showToast("PDF berhasil dibuat");
+        }
+
+        function exportToTxt() {
+            const getV = (id) => document.getElementById(id).value;
+            const content = `
+[ BANLIECOMPUTING SECURE LOG ]
+Invoice: ${getV('in_no')}
+Device : ${getV('in_brand')} ${getV('in_model')}
+OS     : ${getV('in_os')}
+Specs  : ${getV('in_cpu')} / ${getV('in_ram')}
+IID    : ${getV('in_iid')}
+S/N    : ${getV('in_sn')}
+Code   : ${document.getElementById('pv_grand_total_code').innerText}
+            `;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.download = 'tech-log.txt';
+            link.href = URL.createObjectURL(blob);
+            link.click();
+            showToast("Log disimpan");
+        }
+
+        window.onload = renderItemInputs;
+    </script>
+</body>
+</html>
