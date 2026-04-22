@@ -12,7 +12,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
         
-        /* Ukuran Sertifikat Diperkecil menjadi A5 Landscape (210mm x 148mm) */
+        /* Ukuran Sertifikat A5 Landscape (210mm x 148mm) - Desain Padat */
         .invoice-container { 
             background: white; position: relative; overflow: hidden; 
             height: 148mm; width: 210mm; margin: 0 auto; 
@@ -26,7 +26,6 @@
         .modal { display: none; }
         .modal.active { display: flex; }
         
-        /* Wrapper untuk Preview agar muat di layar */
         .preview-wrapper { overflow: auto; max-height: 75vh; width: 100%; display: flex; justify-content: center; padding: 1rem; }
     </style>
 </head>
@@ -153,7 +152,6 @@
                 <div class="relative z-10 bg-slate-900 px-6 py-4 text-white flex justify-between items-center border-b-4 border-indigo-500">
                     <div class="flex items-center gap-4">
                         <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center overflow-hidden p-1 shadow-md">
-                            <!-- crossorigin="anonymous" membantu html2canvas memproses gambar eksternal -->
                             <img src="https://image2url.com/r2/default/images/1775473744461-6ce0dbd2-a423-456a-aea5-ac571a08addb.ico" crossorigin="anonymous" alt="Logo" class="w-full h-full object-contain">
                         </div>
                         <div>
@@ -163,8 +161,9 @@
                     </div>
                     <div class="text-right">
                         <h2 class="text-lg font-light tracking-[0.2em] text-indigo-100 uppercase">Billing Report</h2>
-                        <div class="mt-1 bg-indigo-600 px-3 py-0.5 rounded-md inline-block">
-                            <p id="pv_no" class="text-white font-mono text-[10px] font-bold">#BC-RPT-001</p>
+                        <!-- Perbaikan Invoice Export: Menggunakan INLINE CSS -->
+                        <div class="mt-1 inline-block" style="background-color: #4f46e5; padding: 2px 8px; border-radius: 4px;">
+                            <p id="pv_no" style="color: #ffffff; font-family: monospace; font-size: 10px; font-weight: bold; margin: 0;">#BC-RPT-001</p>
                         </div>
                     </div>
                 </div>
@@ -200,9 +199,12 @@
                         <div class="flex-grow">
                             <table class="w-full">
                                 <thead>
-                                    <tr class="border-b border-slate-100 text-[8px] text-slate-400 uppercase tracking-widest font-black"><th class="pb-2 text-left">Description</th><th class="pb-2 text-right w-16">Qty</th></tr>
+                                    <tr class="border-b border-slate-100 text-[8px] text-slate-400 uppercase tracking-widest font-black">
+                                        <th class="pb-2 text-left">Description</th>
+                                        <th class="pb-2 text-right w-16">Qty</th>
+                                    </tr>
                                 </thead>
-                                <tbody id="pv_table_body" class="text-[9px] text-slate-600"></tbody>
+                                <tbody id="pv_table_body" class="text-[9px] text-slate-600 align-top"></tbody>
                             </table>
                         </div>
                         
@@ -296,7 +298,10 @@
                     </div>
                     <div class="text-right">
                         <h2 class="text-lg font-light tracking-[0.2em] text-indigo-100 uppercase">Billing Report</h2>
-                        <div class="mt-1 bg-indigo-600 px-3 py-0.5 rounded-md inline-block"><p id="prev_no" class="text-white font-mono text-[10px] font-bold">#BC-RPT-001</p></div>
+                        <!-- Perbaikan Invoice Export: INLINE CSS -->
+                        <div class="mt-1 inline-block" style="background-color: #4f46e5; padding: 2px 8px; border-radius: 4px;">
+                            <p id="prev_no" style="color: #ffffff; font-family: monospace; font-size: 10px; font-weight: bold; margin: 0;">#BC-RPT-001</p>
+                        </div>
                     </div>
                 </div>
                 <div class="relative z-10 flex-grow flex">
@@ -326,7 +331,7 @@
                         <div class="flex-grow">
                             <table class="w-full">
                                 <thead><tr class="border-b border-slate-100 text-[8px] text-slate-400 uppercase tracking-widest font-black"><th class="pb-2 text-left">Description</th><th class="pb-2 text-right w-16">Qty</th></tr></thead>
-                                <tbody id="prev_table_body" class="text-[9px] text-slate-600"></tbody>
+                                <tbody id="prev_table_body" class="text-[9px] text-slate-600 align-top"></tbody>
                             </table>
                         </div>
                         <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between items-end">
@@ -356,10 +361,11 @@
         // KONFIGURASI GOOGLE APPS SCRIPT URL
         // ==========================================
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWPtL6SOtI4_AYiM6ORJg92aJkuVT20-NTBHuVF3w_QG_y8oIRktJCTM4Mx3lMBLrx/exec"; 
-        const { jsPDF } = window.jspdf; // Deklarasi pemanggil PDF agar tidak error
+        const { jsPDF } = window.jspdf;
 
         // --- VARIABEL & FUNGSI UMUM ---
-        let items = [ { desc: 'Ms. Office 2021 Retail', qty: 1, price: 350000 } ];
+        // Penambahan struktur variabel showAcc, email, pass, recoveryQ, recoveryE
+        let items = [ { desc: 'Ms. Office 2021 Retail', qty: 1, price: 350000, showAcc: false, email: '', pass: '', recoveryQ: '', recoveryE: 'banliecomputing@gmail.com' } ];
         let historyData = [];
 
         // --- SISTEM SESI (SESSION) ---
@@ -456,15 +462,93 @@
             const container = document.getElementById('items-input-container'); container.innerHTML = '';
             items.forEach((item, index) => {
                 const div = document.createElement('div'); div.className = 'bg-slate-50 p-2 rounded-lg border border-slate-100 relative group';
-                div.innerHTML = `<button onclick="removeItem(${index})" class="absolute top-1 right-1 text-slate-300 hover:text-rose-500">x</button><input list="service-options" type="text" value="${item.desc}" oninput="updateItem(${index}, 'desc', this.value)" class="w-full bg-white border border-slate-200 rounded px-2 py-1 font-bold text-[10px] mb-1 outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Ketik atau pilih produk/layanan..."><div class="grid grid-cols-2 gap-2"><input type="number" value="${item.qty}" oninput="updateItem(${index}, 'qty', this.value)" class="w-full border border-slate-200 rounded px-1.5 py-0.5 text-[10px]" placeholder="Qty"><div class="relative"><input type="number" value="${item.price}" oninput="updateItem(${index}, 'price', this.value)" class="w-full border border-slate-200 rounded px-1.5 py-0.5 text-[10px]" placeholder="Harga"><span class="absolute right-1.5 top-0.5 text-[7px] font-bold text-indigo-400">${encodePrice(item.price)}</span></div></div>`;
+                
+                // HTML Input Form untuk Item
+                let htmlStr = `
+                    <button onclick="removeItem(${index})" class="absolute top-1 right-1 text-slate-300 hover:text-rose-500">x</button>
+                    <input list="service-options" type="text" value="${item.desc}" oninput="updateItem(${index}, 'desc', this.value)" class="w-full bg-white border border-slate-200 rounded px-2 py-1 font-bold text-[10px] mb-1 outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Ketik atau pilih produk/layanan...">
+                    
+                    <div class="grid grid-cols-2 gap-2 mt-1">
+                        <label class="flex items-center gap-1 text-[8px] text-slate-500 font-bold">
+                            <input type="checkbox" ${item.showAcc ? 'checked' : ''} onchange="updateItem(${index}, 'showAcc', this.checked)"> Info Akun MS
+                        </label>
+                    </div>
+
+                    ${item.showAcc ? `
+                    <div class="grid grid-cols-2 gap-2 mt-2 p-2 bg-slate-100 rounded border border-slate-200">
+                        <input type="text" value="${item.email || ''}" oninput="updateItem(${index}, 'email', this.value)" placeholder="Email Akun" class="w-full border border-slate-200 rounded px-1.5 py-0.5 text-[9px]">
+                        <input type="text" value="${item.pass || ''}" oninput="updateItem(${index}, 'pass', this.value)" placeholder="Password" class="w-full border border-slate-200 rounded px-1.5 py-0.5 text-[9px]">
+                        <input type="text" value="${item.recoveryQ || ''}" oninput="updateItem(${index}, 'recoveryQ', this.value)" placeholder="Ask Recovery (Cth: Hewan Peliharaan?)" class="w-full border border-slate-200 rounded px-1.5 py-0.5 text-[9px]">
+                        <input type="text" value="${item.recoveryE !== undefined ? item.recoveryE : 'banliecomputing@gmail.com'}" oninput="updateItem(${index}, 'recoveryE', this.value)" placeholder="Recovery Email" class="w-full border border-slate-200 rounded px-1.5 py-0.5 text-[9px]">
+                    </div>
+                    ` : ''}
+
+                    <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-200">
+                        <div class="flex items-center gap-1"><span class="text-[8px] text-slate-400">Qty:</span> <input type="number" value="${item.qty}" oninput="updateItem(${index}, 'qty', this.value)" class="w-full border border-slate-200 rounded px-1.5 py-0.5 text-[10px]"></div>
+                        <div class="flex items-center gap-1 relative">
+                            <span class="text-[8px] text-slate-400">Rp:</span>
+                            <input type="number" value="${item.price}" oninput="updateItem(${index}, 'price', this.value)" class="w-full border border-slate-200 rounded px-1.5 py-0.5 text-[10px]">
+                            <span class="absolute right-1.5 top-0.5 text-[7px] font-bold text-indigo-400">${encodePrice(item.price)}</span>
+                        </div>
+                    </div>
+                `;
+                div.innerHTML = htmlStr;
                 container.appendChild(div);
             });
             updatePreview();
         }
 
-        window.addItem = () => { items.push({ desc: '', qty: 1, price: 0 }); renderItemInputs(); }
+        window.addItem = () => { 
+            items.push({ desc: '', qty: 1, price: 0, showAcc: false, email: '', pass: '', recoveryQ: '', recoveryE: 'banliecomputing@gmail.com' }); 
+            renderItemInputs(); 
+        }
         window.removeItem = (index) => { items.splice(index, 1); renderItemInputs(); }
-        window.updateItem = (index, key, val) => { items[index][key] = key === 'desc' ? val : parseFloat(val) || 0; updatePreview(); }
+        
+        window.updateItem = (index, key, val) => { 
+            if (key === 'qty' || key === 'price') {
+                items[index][key] = parseFloat(val) || 0; 
+            } else if (key === 'showAcc') {
+                items[index][key] = val; // Boolean
+                if (val && items[index].recoveryE === undefined) items[index].recoveryE = 'banliecomputing@gmail.com';
+                renderItemInputs(); // Re-render UI karena nambah input box
+                return;
+            } else {
+                items[index][key] = val; 
+            }
+            updatePreview(); 
+        }
+
+        function generateItemTableHTML(itemList) {
+            let htmlStr = '';
+            let totalAll = 0;
+            itemList.forEach(item => { 
+                totalAll += ((item.qty || 0) * (item.price || 0)); 
+                
+                let accInfoHtml = '';
+                if (item.showAcc) {
+                    accInfoHtml = `
+                    <div class="text-[7px] text-slate-500 mt-1 bg-slate-50 p-1.5 rounded border border-slate-100 leading-tight">
+                        <span class="font-bold text-slate-700">Email:</span> ${item.email || '-'} &nbsp;|&nbsp; 
+                        <span class="font-bold text-slate-700">Pass:</span> ${item.pass || '-'} <br>
+                        <span class="font-bold text-slate-700">Ask Rec:</span> ${item.recoveryQ || '-'} &nbsp;|&nbsp; 
+                        <span class="font-bold text-slate-700">Rec Email:</span> ${item.recoveryE || '-'}
+                    </div>`;
+                }
+
+                // Menampilkan Qty (Jika 0 disembunyikan/tulis -)
+                let qtyDisplay = item.qty && item.qty > 0 ? `${item.qty} Unit` : '-';
+
+                htmlStr += `
+                <tr class="border-b border-slate-100">
+                    <td class="py-2 align-top">
+                        <span class="font-bold text-slate-700">${item.desc || '-'}</span>
+                        ${accInfoHtml}
+                    </td>
+                    <td class="py-2 text-right text-slate-500 pr-2 align-top pt-2">${qtyDisplay}</td>
+                </tr>`; 
+            });
+            return { html: htmlStr, total: totalAll };
+        }
 
         window.updatePreview = () => {
             const getV = (id) => document.getElementById(id).value || '-';
@@ -474,9 +558,9 @@
             document.getElementById('pv_iid').innerText = getV('in_iid'); document.getElementById('pv_sn').innerText = getV('in_sn');
             document.getElementById('pv_tech_initial').innerText = getTechInitials(document.getElementById('in_tech_name').value);
 
-            const tbody = document.getElementById('pv_table_body'); tbody.innerHTML = ''; let totalAll = 0;
-            items.forEach(item => { totalAll += (item.qty * item.price); tbody.innerHTML += `<tr class="border-b border-slate-100"><td class="py-1.5 font-bold text-slate-700">${item.desc || '-'}</td><td class="py-1.5 text-right text-slate-500 pr-2">${item.qty} Unit</td></tr>`; });
-            document.getElementById('pv_grand_total_code').innerText = encodePrice(totalAll);
+            const tableData = generateItemTableHTML(items);
+            document.getElementById('pv_table_body').innerHTML = tableData.html;
+            document.getElementById('pv_grand_total_code').innerText = encodePrice(tableData.total);
         }
 
         window.showToast = (msg) => {
@@ -499,15 +583,12 @@
             document.getElementById('prev_sn').innerText = data.sn || '-';
             document.getElementById('prev_tech_initial').innerText = getTechInitials(data.tech_name);
 
-            const tbody = document.getElementById('prev_table_body'); tbody.innerHTML = ''; let totalAll = 0;
             let previewItems = [];
             try { previewItems = JSON.parse(data.items); } catch(e) {}
 
-            previewItems.forEach(item => {
-                totalAll += (item.qty * item.price);
-                tbody.innerHTML += `<tr class="border-b border-slate-100"><td class="py-1.5 font-bold text-slate-700">${item.desc || '-'}</td><td class="py-1.5 text-right text-slate-500 pr-2">${item.qty} Unit</td></tr>`;
-            });
-            document.getElementById('prev_grand_total_code').innerText = encodePrice(totalAll);
+            const tableData = generateItemTableHTML(previewItems);
+            document.getElementById('prev_table_body').innerHTML = tableData.html;
+            document.getElementById('prev_grand_total_code').innerText = encodePrice(tableData.total);
 
             document.getElementById('preview-modal').classList.add('active');
         }
@@ -533,7 +614,7 @@
                 model: document.getElementById('in_model').value, os: document.getElementById('in_os').value,
                 cpu: document.getElementById('in_cpu').value, ram: document.getElementById('in_ram').value,
                 iid: document.getElementById('in_iid').value, sn: document.getElementById('in_sn').value,
-                items: JSON.stringify(items)
+                items: JSON.stringify(items) // JSON.stringify ini akan otomatis membungkus info akun kita.
             };
             try {
                 await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
@@ -587,11 +668,10 @@
             });
         }
 
-        // --- EXPORT GLOBAL (Perbaikan: Menggunakan opsi useCORS dan allowTaint untuk logo eksternal) ---
+        // --- EXPORT GLOBAL ---
         window.exportToImage = async (format, elementId, nameInputId) => {
             const el = document.getElementById(elementId);
             const fileName = document.getElementById(nameInputId).innerText || document.getElementById(nameInputId).value;
-            // Ditambahkan useCORS & allowTaint agar logo & invoice no dirender sempurna
             const canvas = await html2canvas(el, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: "#ffffff" }); 
             const link = document.createElement('a');
             link.download = `BC-REPORT-${fileName}.${format}`;
@@ -604,7 +684,7 @@
             const fileName = document.getElementById(nameInputId).innerText || document.getElementById(nameInputId).value;
             const canvas = await html2canvas(el, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: "#ffffff" });
             
-            // Format PDF disesuaikan dengan kanvas baru: A5 Landscape (210mm x 148mm)
+            // Format PDF A5 Landscape (210mm x 148mm)
             const pdf = new jsPDF('l', 'mm', 'a5');
             pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 148);
             pdf.save(`BC-REPORT-${fileName}.pdf`); showToast("PDF berhasil dibuat!");
