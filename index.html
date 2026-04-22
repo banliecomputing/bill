@@ -12,16 +12,11 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
         
-        /* Ubah ukuran menjadi Landscape A4 (297mm x 210mm) */
+        /* Ukuran Sertifikat Landscape A4 (297mm x 210mm) */
         .invoice-container { 
-            background: white; 
-            position: relative; 
-            overflow: hidden; 
-            height: 210mm; 
-            width: 297mm; 
-            margin: 0 auto; 
-            display: flex;
-            flex-direction: column;
+            background: white; position: relative; overflow: hidden; 
+            height: 210mm; width: 297mm; margin: 0 auto; 
+            display: flex; flex-direction: column;
         }
         
         .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-20deg); font-size: 6rem; font-weight: 900; color: rgba(0, 0, 0, 0.02); white-space: nowrap; pointer-events: none; z-index: 0; user-select: none; text-transform: uppercase; }
@@ -30,11 +25,13 @@
         @media print { .no-print { display: none; } body { background: white; padding: 0; } .invoice-container { box-shadow: none; border: none; margin: 0; } }
         .modal { display: none; }
         .modal.active { display: flex; }
+        
+        /* Wrapper untuk Preview agar muat di layar */
+        .preview-wrapper { overflow: auto; max-height: 75vh; width: 100%; display: flex; justify-content: center; padding: 1rem; }
     </style>
 </head>
 <body class="p-0 text-slate-800">
 
-    <!-- DAFTAR PILIHAN ITEM -->
     <datalist id="service-options">
         <option value="Ms. Office 2010 Retail">
         <option value="Ms. Office 2013 Retail">
@@ -67,8 +64,6 @@
             </div>
 
             <div class="space-y-5">
-                
-                <!-- Identitas Laporan -->
                 <section>
                     <div class="grid grid-cols-3 gap-3">
                         <div>
@@ -86,7 +81,6 @@
                     </div>
                 </section>
 
-                <!-- Informasi Hardware -->
                 <section class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Device & OS Info</h3>
                     <div class="grid grid-cols-2 gap-3 mb-3">
@@ -115,7 +109,6 @@
                     </div>
                 </section>
 
-                <!-- Informasi Lisensi -->
                 <section class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100">
                     <h3 class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mb-3">License Identifiers</h3>
                     <div class="space-y-3">
@@ -130,7 +123,6 @@
                     </div>
                 </section>
 
-                <!-- Daftar Item/Layanan -->
                 <section>
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Pricing (Internal Only)</h3>
@@ -139,27 +131,23 @@
                     <div id="items-input-container" class="space-y-2"></div>
                 </section>
 
-                <!-- Tombol Aksi -->
                 <section class="pt-4 border-t border-slate-100 flex flex-col gap-2 pb-10">
                     <button onclick="saveDataToCloud()" id="btn-save" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg text-sm font-bold transition flex justify-center items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                         Simpan ke Google Sheets
                     </button>
                     <div class="grid grid-cols-2 gap-2">
-                        <button onclick="exportToPDF()" class="bg-rose-600 text-white py-2 rounded text-xs font-bold transition">Ekspor PDF (Landscape)</button>
-                        <button onclick="exportToImage('png')" class="bg-indigo-600 text-white py-2 rounded text-xs font-bold transition">Ekspor PNG</button>
+                        <button onclick="exportToPDF('billing-card', 'in_no')" class="bg-rose-600 text-white py-2 rounded text-xs font-bold transition">Ekspor PDF</button>
+                        <button onclick="exportToImage('png', 'billing-card', 'in_no')" class="bg-indigo-600 text-white py-2 rounded text-xs font-bold transition">Ekspor PNG</button>
                     </div>
                 </section>
             </div>
         </div>
 
-        <!-- PRATINJAU DOKUMEN (Kanan - Desain Landscape) -->
+        <!-- PRATINJAU DOKUMEN UTAMA (Kanan) -->
         <div class="lg:w-2/3 w-full p-4 lg:p-8 lg:h-screen lg:overflow-y-auto flex justify-center bg-slate-200">
-            
             <div id="billing-card" class="invoice-container shadow-2xl border border-slate-200 rounded-xl">
                 <div class="watermark">BANLIECOMPUTING</div>
-                
-                <!-- Header Landscape -->
                 <div class="relative z-10 bg-slate-900 px-10 py-8 text-white flex justify-between items-center border-b-4 border-indigo-500">
                     <div class="flex items-center gap-5">
                         <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center overflow-hidden p-1 shadow-lg">
@@ -177,66 +165,36 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Konten Utama (2 Kolom) -->
                 <div class="relative z-10 flex-grow flex">
-                    
-                    <!-- Kolom Kiri: Informasi Sistem -->
                     <div class="w-2/5 bg-slate-50 border-r border-slate-200 p-8 flex flex-col justify-between">
                         <div>
                             <h3 class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-4 border-b border-indigo-100 pb-2">Hardware & OS Info</h3>
                             <div class="space-y-3">
-                                <div>
-                                    <p class="text-[9px] text-slate-400 uppercase font-bold">Brand / Model</p>
-                                    <p id="pv_device" class="text-xs text-slate-800 font-bold">-</p>
-                                </div>
-                                <div>
-                                    <p class="text-[9px] text-slate-400 uppercase font-bold">Processor / RAM</p>
-                                    <p class="text-xs text-slate-700 font-medium"><span id="pv_cpu">-</span> / <span id="pv_ram">-</span></p>
-                                </div>
-                                <div>
-                                    <p class="text-[9px] text-slate-400 uppercase font-bold">OS Edition</p>
-                                    <p id="pv_os" class="text-xs text-indigo-600 font-bold">-</p>
-                                </div>
-                                <div>
-                                    <p class="text-[9px] text-slate-400 uppercase font-bold">Report Date</p>
-                                    <p id="pv_date" class="text-xs text-slate-700 font-medium">-</p>
-                                </div>
+                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">Brand / Model</p><p id="pv_device" class="text-xs text-slate-800 font-bold">-</p></div>
+                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">Processor / RAM</p><p class="text-xs text-slate-700 font-medium"><span id="pv_cpu">-</span> / <span id="pv_ram">-</span></p></div>
+                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">OS Edition</p><p id="pv_os" class="text-xs text-indigo-600 font-bold">-</p></div>
+                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">Report Date</p><p id="pv_date" class="text-xs text-slate-700 font-medium">-</p></div>
                             </div>
                         </div>
-
                         <div class="mt-6 bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
                             <h3 class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2">Authentication</h3>
-                            <p class="text-xs font-black text-emerald-600 mb-3 flex items-center gap-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                                SYSTEM CERTIFIED
-                            </p>
+                            <p class="text-xs font-black text-emerald-600 mb-3 flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> SYSTEM CERTIFIED</p>
                             <p class="text-[8px] text-slate-400 uppercase font-bold">Serial Number</p>
                             <p id="pv_sn" class="text-[10px] font-mono text-indigo-700 break-all mb-2">-</p>
                             <p class="text-[8px] text-slate-400 uppercase font-bold">Installation ID</p>
                             <p id="pv_iid" class="text-[9px] font-mono text-slate-500 break-all">-</p>
                         </div>
                     </div>
-
-                    <!-- Kolom Kanan: Tabel Layanan -->
                     <div class="w-3/5 bg-white p-8 flex flex-col">
                         <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">Provided Services & Products</h3>
-                        
                         <div class="flex-grow">
                             <table class="w-full">
                                 <thead>
-                                    <tr class="border-b-2 border-slate-100 text-[10px] text-slate-400 uppercase tracking-widest font-black">
-                                        <th class="pb-3 text-left">Description</th>
-                                        <th class="pb-3 text-right w-24">Quantity</th>
-                                    </tr>
+                                    <tr class="border-b-2 border-slate-100 text-[10px] text-slate-400 uppercase tracking-widest font-black"><th class="pb-3 text-left">Description</th><th class="pb-3 text-right w-24">Quantity</th></tr>
                                 </thead>
-                                <tbody id="pv_table_body" class="text-xs text-slate-600">
-                                    <!-- Items diinjeksi disini -->
-                                </tbody>
+                                <tbody id="pv_table_body" class="text-xs text-slate-600"></tbody>
                             </table>
                         </div>
-
-                        <!-- Footer Kanan (Kode) -->
                         <div class="mt-auto pt-6 border-t border-slate-100 flex justify-between items-end">
                             <div class="text-center">
                                 <div class="w-24 h-px bg-slate-300 mx-auto mb-1"></div>
@@ -251,7 +209,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -264,10 +221,8 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             </div>
             <h3 class="font-bold text-lg text-slate-800 mb-1">Akses Database Terkunci</h3>
-            <p class="text-xs text-slate-500 mb-5">Masukkan kata sandi teknisi untuk melihat dan mengelola riwayat laporan.</p>
-            
+            <p class="text-xs text-slate-500 mb-5">Masukkan kata sandi teknisi untuk membuka riwayat. Sesi ini akan bertahan selama 2 menit.</p>
             <input type="password" id="in_password" class="w-full border-2 border-slate-200 rounded-lg px-4 py-3 mb-5 text-center text-lg tracking-[0.3em] font-bold focus:border-indigo-500 focus:outline-none" placeholder="••••••••">
-            
             <div class="flex gap-2">
                 <button onclick="closeAuthModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 rounded-lg text-sm transition">Batal</button>
                 <button onclick="verifyPassword()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-lg text-sm transition">Buka Akses</button>
@@ -275,34 +230,118 @@
         </div>
     </div>
 
-    <!-- MODAL 2: DATABASE RIWAYAT (GOOGLE SHEETS) -->
+    <!-- MODAL 2: DATABASE RIWAYAT -->
     <div id="history-modal" class="modal fixed inset-0 bg-slate-900/60 z-50 items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden">
             <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
                     Google Sheets Database
                 </h2>
-                <button onclick="closeHistoryModal()" class="text-slate-400 hover:text-rose-500 font-bold p-2">✕ Tutup</button>
+                <div class="flex items-center gap-4">
+                    <!-- TIMER SESI -->
+                    <div id="session-timer-display" class="text-xs font-bold text-rose-500 bg-rose-50 px-3 py-1 rounded-full flex items-center gap-1 border border-rose-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Sesi: 02:00
+                    </div>
+                    <button onclick="closeHistoryModal()" class="text-slate-400 hover:text-slate-600 font-bold p-1 transition">✕ Tutup</button>
+                </div>
             </div>
             <div class="p-5 overflow-y-auto flex-1 bg-slate-100/50">
-                <div id="db-loading" class="text-center py-10 text-slate-400 font-bold text-sm">
-                    Menghubungkan ke Google Sheets...
+                <div id="db-loading" class="text-center py-10 text-slate-400 font-bold text-sm">Menghubungkan ke Google Sheets...</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="history-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: PREVIEW DOKUMEN & EXPORT LANGSUNG -->
+    <div id="preview-modal" class="modal fixed inset-0 bg-slate-900/95 z-[80] items-center justify-center p-4 backdrop-blur-md flex-col">
+        <div class="w-full max-w-[297mm] flex justify-between items-center mb-4">
+            <h2 class="text-white font-bold text-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Preview Sertifikat
+            </h2>
+            <div class="flex gap-2">
+                <span class="text-slate-400 text-xs flex items-center mr-2">Export As:</span>
+                <button onclick="exportToPDF('preview-card', 'prev_no')" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-lg">PDF</button>
+                <button onclick="exportToImage('png', 'preview-card', 'prev_no')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-lg">PNG</button>
+                <button onclick="exportToImage('jpeg', 'preview-card', 'prev_no')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-lg">JPG</button>
+                <button onclick="closePreviewModal()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition ml-3 border border-slate-600">✕ Tutup</button>
+            </div>
+        </div>
+        
+        <div class="preview-wrapper">
+            <!-- CLONE SERTIFIKAT UNTUK PREVIEW -->
+            <div id="preview-card" class="invoice-container shadow-2xl border border-slate-200 rounded-xl" style="flex-shrink: 0;">
+                <div class="watermark">BANLIECOMPUTING</div>
+                <div class="relative z-10 bg-slate-900 px-10 py-8 text-white flex justify-between items-center border-b-4 border-indigo-500">
+                    <div class="flex items-center gap-5">
+                        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center overflow-hidden p-1 shadow-lg">
+                            <img src="https://image2url.com/r2/default/images/1775473744461-6ce0dbd2-a423-456a-aea5-ac571a08addb.ico" alt="Logo" class="w-full h-full object-contain">
+                        </div>
+                        <div>
+                            <h1 class="text-3xl font-extrabold tracking-tight">BANLIE<span class="text-indigo-400">COMPUTING</span></h1>
+                            <p class="text-slate-300 text-[10px] tracking-[0.4em] mt-1 uppercase font-bold">Service & Sparepart</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <h2 class="text-2xl font-extralight tracking-[0.3em] text-indigo-100 uppercase">Billing Report</h2>
+                        <div class="mt-2 inline-block bg-indigo-600 px-4 py-1 rounded-full"><p id="prev_no" class="text-white font-mono text-sm font-bold">#BC-RPT-001</p></div>
+                    </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="history-container">
-                    <!-- Data will be injected here -->
+                <div class="relative z-10 flex-grow flex">
+                    <div class="w-2/5 bg-slate-50 border-r border-slate-200 p-8 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-4 border-b border-indigo-100 pb-2">Hardware & OS Info</h3>
+                            <div class="space-y-3">
+                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">Brand / Model</p><p id="prev_device" class="text-xs text-slate-800 font-bold">-</p></div>
+                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">Processor / RAM</p><p class="text-xs text-slate-700 font-medium"><span id="prev_cpu">-</span> / <span id="prev_ram">-</span></p></div>
+                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">OS Edition</p><p id="prev_os" class="text-xs text-indigo-600 font-bold">-</p></div>
+                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">Report Date</p><p id="prev_date" class="text-xs text-slate-700 font-medium">-</p></div>
+                            </div>
+                        </div>
+                        <div class="mt-6 bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+                            <h3 class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2">Authentication</h3>
+                            <p class="text-xs font-black text-emerald-600 mb-3 flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> SYSTEM CERTIFIED</p>
+                            <p class="text-[8px] text-slate-400 uppercase font-bold">Serial Number</p>
+                            <p id="prev_sn" class="text-[10px] font-mono text-indigo-700 break-all mb-2">-</p>
+                            <p class="text-[8px] text-slate-400 uppercase font-bold">Installation ID</p>
+                            <p id="prev_iid" class="text-[9px] font-mono text-slate-500 break-all">-</p>
+                        </div>
+                    </div>
+                    <div class="w-3/5 bg-white p-8 flex flex-col">
+                        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">Provided Services & Products</h3>
+                        <div class="flex-grow">
+                            <table class="w-full">
+                                <thead><tr class="border-b-2 border-slate-100 text-[10px] text-slate-400 uppercase tracking-widest font-black"><th class="pb-3 text-left">Description</th><th class="pb-3 text-right w-24">Quantity</th></tr></thead>
+                                <tbody id="prev_table_body" class="text-xs text-slate-600"></tbody>
+                            </table>
+                        </div>
+                        <div class="mt-auto pt-6 border-t border-slate-100 flex justify-between items-end">
+                            <div class="text-center">
+                                <div class="w-24 h-px bg-slate-300 mx-auto mb-1"></div>
+                                <p class="text-[8px] text-slate-400 uppercase font-bold tracking-widest">Authorized By</p>
+                                <p id="prev_tech_initial" class="text-xs font-black text-emerald-600 tracking-widest mt-1">--</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Code</p>
+                                <div class="bg-slate-900 text-white px-5 py-2 rounded-lg shadow-md inline-block">
+                                    <span id="prev_grand_total_code" class="font-black text-lg tech-code tracking-[0.2em]">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- TOAST NOTIFICATION -->
-    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-900 text-white rounded-2xl text-sm font-medium opacity-0 transition-all pointer-events-none z-[70] shadow-xl"></div>
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-900 text-white rounded-2xl text-sm font-medium opacity-0 transition-all pointer-events-none z-[90] shadow-xl"></div>
 
     <script>
         // ==========================================
         // KONFIGURASI GOOGLE APPS SCRIPT URL
-        // Ganti URL ini dengan URL Web App dari Google Apps Script Anda (Tahap 2)
         // ==========================================
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWPtL6SOtI4_AYiM6ORJg92aJkuVT20-NTBHuVF3w_QG_y8oIRktJCTM4Mx3lMBLrx/exec"; 
 
@@ -310,39 +349,85 @@
         let items = [ { desc: 'Ms. Office 2021 Retail', qty: 1, price: 350000 } ];
         let historyData = [];
 
+        // --- SISTEM SESI (SESSION) ---
+        let sessionEndTime = 0;
+        let sessionTimerInterval = null;
+
+        function checkSession() {
+            if (Date.now() < sessionEndTime) {
+                // Sesi masih valid, langsung buka DB
+                document.getElementById('history-modal').classList.add('active');
+                if (historyData.length === 0) loadFromGoogleSheets();
+            } else {
+                // Sesi habis, minta password lagi
+                document.getElementById('auth-modal').classList.add('active');
+                document.getElementById('in_password').focus();
+            }
+        }
+
+        function startSessionTimer() {
+            if(sessionTimerInterval) clearInterval(sessionTimerInterval);
+            sessionEndTime = Date.now() + 120000; // 2 Menit (120,000 milidetik)
+
+            sessionTimerInterval = setInterval(() => {
+                const timeLeft = sessionEndTime - Date.now();
+                const timerEl = document.getElementById('session-timer-display');
+
+                if (timeLeft <= 0) {
+                    clearInterval(sessionTimerInterval);
+                    timerEl.innerText = "Sesi Habis";
+                    closeHistoryModal();
+                    closePreviewModal();
+                    showToast("Sesi keamanan berakhir. Silakan login kembali.");
+                    sessionEndTime = 0;
+                } else {
+                    const minutes = Math.floor(timeLeft / 60000);
+                    const seconds = Math.floor((timeLeft % 60000) / 1000);
+                    timerEl.innerText = `Sesi: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        window.openAuthModal = () => checkSession();
+        window.closeAuthModal = () => { document.getElementById('auth-modal').classList.remove('active'); document.getElementById('in_password').value = ''; }
+        
+        window.verifyPassword = () => {
+            const pw = document.getElementById('in_password').value;
+            if (pw === 'admin123') { // KATA SANDI TEKNISI
+                closeAuthModal();
+                startSessionTimer(); // Mulai hitung mundur 2 menit
+                document.getElementById('history-modal').classList.add('active');
+                loadFromGoogleSheets(); 
+            } else {
+                showToast("Kata sandi salah!");
+            }
+        }
+        document.getElementById('in_password').addEventListener('keypress', function(e) { if (e.key === 'Enter') verifyPassword(); });
+        window.closeHistoryModal = () => document.getElementById('history-modal').classList.remove('active');
+
+        // --- FUNGSI URL & DATA ---
         function readUrlParameters() {
             const urlParams = new URLSearchParams(window.location.search);
             const getP = (key) => urlParams.get(key) || '';
-            
             if (urlParams.has('brand')) {
-                document.getElementById('in_brand').value = getP('brand');
-                document.getElementById('in_model').value = getP('model');
-                document.getElementById('in_os').value = getP('os');
-                document.getElementById('in_cpu').value = getP('cpu');
-                document.getElementById('in_ram').value = getP('ram');
-                document.getElementById('in_iid').value = getP('iid');
+                document.getElementById('in_brand').value = getP('brand'); document.getElementById('in_model').value = getP('model');
+                document.getElementById('in_os').value = getP('os'); document.getElementById('in_cpu').value = getP('cpu');
+                document.getElementById('in_ram').value = getP('ram'); document.getElementById('in_iid').value = getP('iid');
                 document.getElementById('in_sn').value = getP('sn');
-                
-                const rand = Math.floor(100 + Math.random() * 900);
-                document.getElementById('in_no').value = `#BC-${rand}`;
-                
+                document.getElementById('in_no').value = `#BC-${Math.floor(100 + Math.random() * 900)}`;
                 showToast("Data dari Terminal berhasil dimuat!");
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
-            if (!document.getElementById('in_date').value) {
-                document.getElementById('in_date').valueAsDate = new Date();
-            }
+            if (!document.getElementById('in_date').value) document.getElementById('in_date').valueAsDate = new Date();
         }
 
         function encodePrice(price) {
             if (!price || price <= 0) return "0";
-            const priceStr = price.toString();
-            const map = { '1':'A', '2':'B', '3':'C', '4':'D', '5':'E', '6':'F', '7':'G', '8':'H', '9':'I', '0':'0' };
+            const priceStr = price.toString(); const map = { '1':'A', '2':'B', '3':'C', '4':'D', '5':'E', '6':'F', '7':'G', '8':'H', '9':'I', '0':'0' };
             let zeroCount = 0; let i = priceStr.length - 1;
             while (i >= 0 && priceStr[i] === '0') { zeroCount++; i--; }
             const mainPart = priceStr.substring(0, priceStr.length - zeroCount);
-            let encodedMain = "";
-            for (let char of mainPart) { encodedMain += map[char] || char; }
+            let encodedMain = ""; for (let char of mainPart) { encodedMain += map[char] || char; }
             if (zeroCount === 1) return encodedMain + "0";
             if (zeroCount > 1) return encodedMain + "0^" + zeroCount;
             return encodedMain;
@@ -355,23 +440,12 @@
             return clean.charAt(0) + clean.charAt(clean.length - 1);
         }
 
+        // --- FORM & PREVIEW UTAMA ---
         function renderItemInputs() {
-            const container = document.getElementById('items-input-container');
-            container.innerHTML = '';
+            const container = document.getElementById('items-input-container'); container.innerHTML = '';
             items.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'bg-slate-50 p-2 rounded-lg border border-slate-100 relative group';
-                div.innerHTML = `
-                    <button onclick="removeItem(${index})" class="absolute top-1 right-1 text-slate-300 hover:text-rose-500">x</button>
-                    <input list="service-options" type="text" value="${item.desc}" oninput="updateItem(${index}, 'desc', this.value)" class="w-full bg-white border border-slate-200 rounded px-2 py-1 font-bold text-[10px] mb-1 outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Ketik atau pilih produk/layanan...">
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="number" value="${item.qty}" oninput="updateItem(${index}, 'qty', this.value)" class="w-full border border-slate-200 rounded px-1.5 py-0.5 text-[10px]" placeholder="Qty">
-                        <div class="relative">
-                            <input type="number" value="${item.price}" oninput="updateItem(${index}, 'price', this.value)" class="w-full border border-slate-200 rounded px-1.5 py-0.5 text-[10px]" placeholder="Harga">
-                            <span class="absolute right-1.5 top-0.5 text-[7px] font-bold text-indigo-400">${encodePrice(item.price)}</span>
-                        </div>
-                    </div>
-                `;
+                const div = document.createElement('div'); div.className = 'bg-slate-50 p-2 rounded-lg border border-slate-100 relative group';
+                div.innerHTML = `<button onclick="removeItem(${index})" class="absolute top-1 right-1 text-slate-300 hover:text-rose-500">x</button><input list="service-options" type="text" value="${item.desc}" oninput="updateItem(${index}, 'desc', this.value)" class="w-full bg-white border border-slate-200 rounded px-2 py-1 font-bold text-[10px] mb-1 outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Ketik atau pilih produk/layanan..."><div class="grid grid-cols-2 gap-2"><input type="number" value="${item.qty}" oninput="updateItem(${index}, 'qty', this.value)" class="w-full border border-slate-200 rounded px-1.5 py-0.5 text-[10px]" placeholder="Qty"><div class="relative"><input type="number" value="${item.price}" oninput="updateItem(${index}, 'price', this.value)" class="w-full border border-slate-200 rounded px-1.5 py-0.5 text-[10px]" placeholder="Harga"><span class="absolute right-1.5 top-0.5 text-[7px] font-bold text-indigo-400">${encodePrice(item.price)}</span></div></div>`;
                 container.appendChild(div);
             });
             updatePreview();
@@ -383,173 +457,107 @@
 
         window.updatePreview = () => {
             const getV = (id) => document.getElementById(id).value || '-';
-            document.getElementById('pv_no').innerText = getV('in_no');
-            document.getElementById('pv_date').innerText = getV('in_date');
-            document.getElementById('pv_device').innerText = `${getV('in_brand')} ${getV('in_model')}`;
-            document.getElementById('pv_os').innerText = getV('in_os');
-            document.getElementById('pv_cpu').innerText = getV('in_cpu');
-            document.getElementById('pv_ram').innerText = getV('in_ram');
-            document.getElementById('pv_iid').innerText = getV('in_iid');
-            document.getElementById('pv_sn').innerText = getV('in_sn');
-            
-            const techName = document.getElementById('in_tech_name').value;
-            document.getElementById('pv_tech_initial').innerText = getTechInitials(techName);
+            document.getElementById('pv_no').innerText = getV('in_no'); document.getElementById('pv_date').innerText = getV('in_date');
+            document.getElementById('pv_device').innerText = `${getV('in_brand')} ${getV('in_model')}`; document.getElementById('pv_os').innerText = getV('in_os');
+            document.getElementById('pv_cpu').innerText = getV('in_cpu'); document.getElementById('pv_ram').innerText = getV('in_ram');
+            document.getElementById('pv_iid').innerText = getV('in_iid'); document.getElementById('pv_sn').innerText = getV('in_sn');
+            document.getElementById('pv_tech_initial').innerText = getTechInitials(document.getElementById('in_tech_name').value);
 
-            const tbody = document.getElementById('pv_table_body');
-            tbody.innerHTML = ''; let totalAll = 0;
-            items.forEach(item => {
-                totalAll += (item.qty * item.price);
-                const descStr = item.desc || '-';
-                tbody.innerHTML += `<tr class="border-b border-slate-100"><td class="py-2.5 font-bold text-slate-700">${descStr}</td><td class="py-2.5 text-right text-slate-500 pr-2">${item.qty} Unit</td></tr>`;
-            });
+            const tbody = document.getElementById('pv_table_body'); tbody.innerHTML = ''; let totalAll = 0;
+            items.forEach(item => { totalAll += (item.qty * item.price); tbody.innerHTML += `<tr class="border-b border-slate-100"><td class="py-2.5 font-bold text-slate-700">${item.desc || '-'}</td><td class="py-2.5 text-right text-slate-500 pr-2">${item.qty} Unit</td></tr>`; });
             document.getElementById('pv_grand_total_code').innerText = encodePrice(totalAll);
         }
 
         window.showToast = (msg) => {
-            const t = document.getElementById('toast');
-            t.innerText = msg; t.classList.remove('opacity-0');
+            const t = document.getElementById('toast'); t.innerText = msg; t.classList.remove('opacity-0');
             setTimeout(() => t.classList.add('opacity-0'), 3000);
         }
 
-        // --- SISTEM KEAMANAN ---
-        window.openAuthModal = () => {
-            document.getElementById('auth-modal').classList.add('active');
-            document.getElementById('in_password').focus();
-        }
-        window.closeAuthModal = () => {
-            document.getElementById('auth-modal').classList.remove('active');
-            document.getElementById('in_password').value = '';
-        }
-        window.verifyPassword = () => {
-            const pw = document.getElementById('in_password').value;
-            if (pw === 'admin123') { // KATA SANDI TEKNISI
-                closeAuthModal();
-                document.getElementById('history-modal').classList.add('active');
-                loadFromGoogleSheets(); 
-            } else {
-                showToast("Kata sandi salah!");
-            }
-        }
-        document.getElementById('in_password').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') verifyPassword();
-        });
-        window.closeHistoryModal = () => document.getElementById('history-modal').classList.remove('active');
+        // --- PREVIEW MODAL (DARI DATABASE) ---
+        window.openPreviewModal = (invoiceNo) => {
+            const data = historyData.find(d => d.invoice_no === invoiceNo);
+            if (!data) return;
+            
+            // Masukkan data ke kotak sertifikat preview
+            document.getElementById('prev_no').innerText = data.invoice_no || '-';
+            document.getElementById('prev_date').innerText = data.date || '-';
+            document.getElementById('prev_device').innerText = `${data.brand || '-'} ${data.model || '-'}`;
+            document.getElementById('prev_os').innerText = data.os || '-';
+            document.getElementById('prev_cpu').innerText = data.cpu || '-';
+            document.getElementById('prev_ram').innerText = data.ram || '-';
+            document.getElementById('prev_iid').innerText = data.iid || '-';
+            document.getElementById('prev_sn').innerText = data.sn || '-';
+            document.getElementById('prev_tech_initial').innerText = getTechInitials(data.tech_name);
 
+            const tbody = document.getElementById('prev_table_body'); tbody.innerHTML = ''; let totalAll = 0;
+            let previewItems = [];
+            try { previewItems = JSON.parse(data.items); } catch(e) {}
+
+            previewItems.forEach(item => {
+                totalAll += (item.qty * item.price);
+                tbody.innerHTML += `<tr class="border-b border-slate-100"><td class="py-2.5 font-bold text-slate-700">${item.desc || '-'}</td><td class="py-2.5 text-right text-slate-500 pr-2">${item.qty} Unit</td></tr>`;
+            });
+            document.getElementById('prev_grand_total_code').innerText = encodePrice(totalAll);
+
+            document.getElementById('preview-modal').classList.add('active');
+        }
+        window.closePreviewModal = () => document.getElementById('preview-modal').classList.remove('active');
 
         // --- INTEGRASI GOOGLE SHEETS API ---
-
         async function loadFromGoogleSheets() {
-            if (GOOGLE_SCRIPT_URL === "URL_GOOGLE_SCRIPT_ANDA_DISINI") {
-                document.getElementById('db-loading').innerHTML = `<div class="text-rose-500 font-bold mb-2">⚠️ Google Sheets Belum Dikonfigurasi</div><p class="text-xs text-slate-500">Anda harus memasukkan URL Google Apps Script Anda ke dalam kode HTML.</p>`;
-                return;
-            }
-
-            document.getElementById('db-loading').style.display = 'block';
-            document.getElementById('db-loading').innerText = "Mengambil data dari Google Sheets...";
+            document.getElementById('db-loading').style.display = 'block'; document.getElementById('db-loading').innerText = "Mengambil data...";
             document.getElementById('history-container').innerHTML = '';
-
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL + "?action=read");
-                const data = await response.json();
-                historyData = data.records || [];
-                document.getElementById('db-loading').style.display = 'none';
-                renderHistoryUI();
-            } catch (error) {
-                console.error(error);
-                document.getElementById('db-loading').innerText = "Gagal terhubung ke Google Sheets.";
-            }
+                const data = await response.json(); historyData = data.records || [];
+                document.getElementById('db-loading').style.display = 'none'; renderHistoryUI();
+            } catch (error) { document.getElementById('db-loading').innerText = "Gagal terhubung ke Google Sheets."; }
         }
 
         window.saveDataToCloud = async () => {
-            if (GOOGLE_SCRIPT_URL === "URL_GOOGLE_SCRIPT_ANDA_DISINI") {
-                showToast("URL Google Sheets belum disetting!"); return;
-            }
-            
-            const btn = document.getElementById('btn-save');
-            btn.innerText = "Menyimpan ke Sheets...";
-            btn.disabled = true;
-            
+            const btn = document.getElementById('btn-save'); btn.innerText = "Menyimpan ke Sheets..."; btn.disabled = true;
             const invoiceNo = document.getElementById('in_no').value || `INV-${Date.now()}`;
-
             const payload = {
-                action: 'save',
-                invoice_no: invoiceNo,
-                date: document.getElementById('in_date').value,
-                tech_name: document.getElementById('in_tech_name').value,
-                brand: document.getElementById('in_brand').value,
-                model: document.getElementById('in_model').value,
-                os: document.getElementById('in_os').value,
-                cpu: document.getElementById('in_cpu').value,
-                ram: document.getElementById('in_ram').value,
-                iid: document.getElementById('in_iid').value,
-                sn: document.getElementById('in_sn').value,
-                items: JSON.stringify(items) // Konversi array item menjadi string agar mudah disimpan di Sheet
+                action: 'save', invoice_no: invoiceNo, date: document.getElementById('in_date').value,
+                tech_name: document.getElementById('in_tech_name').value, brand: document.getElementById('in_brand').value,
+                model: document.getElementById('in_model').value, os: document.getElementById('in_os').value,
+                cpu: document.getElementById('in_cpu').value, ram: document.getElementById('in_ram').value,
+                iid: document.getElementById('in_iid').value, sn: document.getElementById('in_sn').value,
+                items: JSON.stringify(items)
             };
-
             try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(payload)
-                });
+                await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
                 showToast(`Data ${invoiceNo} berhasil disimpan!`);
-            } catch (e) {
-                console.error(e);
-                showToast("Berhasil mengirim data, silakan cek Sheet Anda.");
-            }
-            
-            btn.disabled = false;
-            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Simpan ke Google Sheets`;
+            } catch (e) { showToast("Selesai (Cek Google Sheets Anda)"); }
+            btn.disabled = false; btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Simpan ke Google Sheets`;
         }
 
         window.deleteFromCloud = async (invoiceNo) => {
-            if (!confirm("Peringatan: Laporan ini akan dihapus permanen dari Google Sheets. Lanjutkan?")) return;
+            if (!confirm("Hapus laporan ini permanen dari Google Sheets?")) return;
             showToast("Sedang menghapus...");
             try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: 'delete', invoice_no: invoiceNo })
-                });
-                showToast("Laporan berhasil dihapus.");
-                loadFromGoogleSheets(); // Refresh data
+                await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'delete', invoice_no: invoiceNo }) });
+                showToast("Laporan dihapus."); loadFromGoogleSheets();
             } catch(e) { showToast("Gagal menghapus data."); }
         }
 
         window.loadToForm = (invoiceNo) => {
-            const data = historyData.find(d => d.invoice_no === invoiceNo);
-            if (!data) return;
-            
-            document.getElementById('in_no').value = data.invoice_no || '';
-            document.getElementById('in_date').value = data.date || '';
-            document.getElementById('in_tech_name').value = data.tech_name || ''; 
-            document.getElementById('in_brand').value = data.brand || '';
-            document.getElementById('in_model').value = data.model || '';
-            document.getElementById('in_os').value = data.os || '';
-            document.getElementById('in_cpu').value = data.cpu || '';
-            document.getElementById('in_ram').value = data.ram || '';
-            document.getElementById('in_iid').value = data.iid || '';
-            document.getElementById('in_sn').value = data.sn || '';
-            
+            const data = historyData.find(d => d.invoice_no === invoiceNo); if (!data) return;
+            document.getElementById('in_no').value = data.invoice_no || ''; document.getElementById('in_date').value = data.date || '';
+            document.getElementById('in_tech_name').value = data.tech_name || ''; document.getElementById('in_brand').value = data.brand || '';
+            document.getElementById('in_model').value = data.model || ''; document.getElementById('in_os').value = data.os || '';
+            document.getElementById('in_cpu').value = data.cpu || ''; document.getElementById('in_ram').value = data.ram || '';
+            document.getElementById('in_iid').value = data.iid || ''; document.getElementById('in_sn').value = data.sn || '';
             try { items = JSON.parse(data.items); } catch(e) { items = []; }
-            
-            renderItemInputs();
-            closeHistoryModal();
-            showToast("Data dimuat. Klik 'Simpan' jika ingin meng-update data ini.");
+            renderItemInputs(); closeHistoryModal(); showToast("Data dimuat. Siap diedit!");
         }
 
         function renderHistoryUI() {
-            const container = document.getElementById('history-container');
-            container.innerHTML = '';
-            
-            if (!historyData || historyData.length === 0) {
-                container.innerHTML = '<div class="col-span-full text-center text-slate-400 py-4">Database Sheets masih kosong.</div>';
-                return;
-            }
+            const container = document.getElementById('history-container'); container.innerHTML = '';
+            if (!historyData || historyData.length === 0) { container.innerHTML = '<div class="col-span-full text-center text-slate-400 py-4">Database Sheets kosong.</div>'; return; }
             
             historyData.forEach(data => {
-                const div = document.createElement('div');
-                div.className = "bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition";
+                const div = document.createElement('div'); div.className = "bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition";
                 div.innerHTML = `
                     <div>
                         <div class="flex justify-between items-start mb-2">
@@ -560,32 +568,36 @@
                         <p class="text-[10px] text-slate-500 mt-1 line-clamp-2">OS: ${data.os}<br>Teknisi: ${data.tech_name || 'Tidak ada'}</p>
                     </div>
                     <div class="mt-4 flex gap-2 border-t border-slate-100 pt-3">
-                        <button onclick="loadToForm('${data.invoice_no}')" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs font-bold py-1.5 rounded transition">Edit Data</button>
-                        <button onclick="deleteFromCloud('${data.invoice_no}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold px-3 py-1.5 rounded transition">Hapus</button>
+                        <!-- TOMBOL PREVIEW BARU -->
+                        <button onclick="openPreviewModal('${data.invoice_no}')" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 text-[10px] font-bold py-1.5 rounded transition shadow-sm border border-emerald-100">Lihat</button>
+                        
+                        <button onclick="loadToForm('${data.invoice_no}')" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-[10px] font-bold py-1.5 rounded transition shadow-sm border border-indigo-100">Edit</button>
+                        <button onclick="deleteFromCloud('${data.invoice_no}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-[10px] font-bold px-3 py-1.5 rounded transition shadow-sm border border-rose-100">Hapus</button>
                     </div>
                 `;
                 container.appendChild(div);
             });
         }
 
-        // --- EXPORT (Diset menjadi Landscape A4) ---
-        window.exportToImage = async (format) => {
-            const el = document.getElementById('billing-card');
-            const canvas = await html2canvas(el, { scale: 3 }); // Kualitas gambar diperbesar
+        // --- EXPORT GLOBAL (Berlaku untuk Form Utama & Preview) ---
+        // Parameter 'elementId' agar bisa memilih mau export form utama atau modal preview
+        window.exportToImage = async (format, elementId, nameInputId) => {
+            const el = document.getElementById(elementId);
+            const fileName = document.getElementById(nameInputId).innerText || document.getElementById(nameInputId).value;
+            const canvas = await html2canvas(el, { scale: 3 }); 
             const link = document.createElement('a');
-            link.download = `BC-TECH-REPORT.${format}`;
+            link.download = `BC-REPORT-${fileName}.${format}`;
             link.href = canvas.toDataURL(`image/${format === 'jpeg' ? 'jpeg' : 'png'}`);
-            link.click(); showToast("Gambar disimpan!");
+            link.click(); showToast(`Gambar ${format.toUpperCase()} disimpan!`);
         }
 
-        window.exportToPDF = async () => {
-            const el = document.getElementById('billing-card');
+        window.exportToPDF = async (elementId, nameInputId) => {
+            const el = document.getElementById(elementId);
+            const fileName = document.getElementById(nameInputId).innerText || document.getElementById(nameInputId).value;
             const canvas = await html2canvas(el, { scale: 2 });
-            // Mengubah PDF menjadi Landscape 'l'
             const pdf = new jsPDF('l', 'mm', 'a4');
-            // Menyesuaikan gambar dengan dimensi A4 Landscape (297x210)
             pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 297, 210);
-            pdf.save(`BC-TECH-REPORT.pdf`); showToast("PDF disimpan!");
+            pdf.save(`BC-REPORT-${fileName}.pdf`); showToast("PDF disimpan!");
         }
 
         readUrlParameters();
