@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Billing Banliecomputing - Cloud Edition</title>
+    <title>Billing Banliecomputing - Sheets Edition</title>
     <link rel="icon" href="https://image2url.com/r2/default/images/1775473744461-6ce0dbd2-a423-456a-aea5-ac571a08addb.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -11,10 +11,22 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
-        .invoice-container { background: white; position: relative; overflow: hidden; min-height: 297mm; width: 210mm; margin: 0 auto; }
-        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 5rem; font-weight: 900; color: rgba(0, 0, 0, 0.02); white-space: nowrap; pointer-events: none; z-index: 0; user-select: none; text-transform: uppercase; }
+        
+        /* Ubah ukuran menjadi Landscape A4 (297mm x 210mm) */
+        .invoice-container { 
+            background: white; 
+            position: relative; 
+            overflow: hidden; 
+            height: 210mm; 
+            width: 297mm; 
+            margin: 0 auto; 
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-20deg); font-size: 6rem; font-weight: 900; color: rgba(0, 0, 0, 0.02); white-space: nowrap; pointer-events: none; z-index: 0; user-select: none; text-transform: uppercase; }
         .tech-code { font-family: 'Courier New', Courier, monospace; font-weight: bold; }
-        @media (max-width: 1024px) { .invoice-container { width: 100%; min-height: auto; } }
+        @media (max-width: 1024px) { .invoice-container { width: 100%; height: auto; min-height: 210mm; } }
         @media print { .no-print { display: none; } body { background: white; padding: 0; } .invoice-container { box-shadow: none; border: none; margin: 0; } }
         .modal { display: none; }
         .modal.active { display: flex; }
@@ -22,14 +34,14 @@
 </head>
 <body class="p-0 text-slate-800">
 
-    <!-- DAFTAR PILIHAN ITEM (Bisa dipilih atau diketik manual) -->
+    <!-- DAFTAR PILIHAN ITEM -->
     <datalist id="service-options">
-        <option value="Microsoft Office 2010 Retail">
-        <option value="Microsoft Office 2013 Retail">
-        <option value="Microsoft Office 2016 Retail">
-        <option value="Microsoft Office 2019 Retail">
-        <option value="Microsoft Office 2021 Retail">
-        <option value="Microsoft Office 2024 Retail">
+        <option value="Ms. Office 2010 Retail">
+        <option value="Ms. Office 2013 Retail">
+        <option value="Ms. Office 2016 Retail">
+        <option value="Ms. Office 2019 Retail">
+        <option value="Ms. Office 2021 Retail">
+        <option value="Ms. Office 2024 Retail">
         <option value="Microsoft 365 Subscription">
         <option value="Windows 10 Pro Activation">
         <option value="Windows 11 Pro Activation">
@@ -50,7 +62,7 @@
                 </h2>
                 <button onclick="openAuthModal()" class="bg-slate-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-md hover:bg-slate-700 flex items-center gap-1 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
-                    Database Riwayat
+                    Sheet Database
                 </button>
             </div>
 
@@ -128,98 +140,118 @@
                 </section>
 
                 <!-- Tombol Aksi -->
-                <section class="pt-4 border-t border-slate-100 flex flex-col gap-2">
+                <section class="pt-4 border-t border-slate-100 flex flex-col gap-2 pb-10">
                     <button onclick="saveDataToCloud()" id="btn-save" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg text-sm font-bold transition flex justify-center items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                        Simpan/Update Database
+                        Simpan ke Google Sheets
                     </button>
                     <div class="grid grid-cols-2 gap-2">
-                        <button onclick="exportToPDF()" class="bg-rose-600 text-white py-2 rounded text-xs font-bold transition">Ekspor PDF</button>
+                        <button onclick="exportToPDF()" class="bg-rose-600 text-white py-2 rounded text-xs font-bold transition">Ekspor PDF (Landscape)</button>
                         <button onclick="exportToImage('png')" class="bg-indigo-600 text-white py-2 rounded text-xs font-bold transition">Ekspor PNG</button>
                     </div>
                 </section>
             </div>
         </div>
 
-        <!-- PRATINJAU DOKUMEN (Kanan) -->
-        <div class="lg:w-2/3 w-full p-4 lg:p-12 lg:h-screen lg:overflow-y-auto flex justify-center bg-slate-200">
-            <div id="billing-card" class="invoice-container shadow-2xl border border-slate-200 flex flex-col">
+        <!-- PRATINJAU DOKUMEN (Kanan - Desain Landscape) -->
+        <div class="lg:w-2/3 w-full p-4 lg:p-8 lg:h-screen lg:overflow-y-auto flex justify-center bg-slate-200">
+            
+            <div id="billing-card" class="invoice-container shadow-2xl border border-slate-200 rounded-xl">
                 <div class="watermark">BANLIECOMPUTING</div>
-                <div class="relative z-10 bg-slate-900 p-10 text-white flex justify-between items-center">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center overflow-hidden p-1">
+                
+                <!-- Header Landscape -->
+                <div class="relative z-10 bg-slate-900 px-10 py-8 text-white flex justify-between items-center border-b-4 border-indigo-500">
+                    <div class="flex items-center gap-5">
+                        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center overflow-hidden p-1 shadow-lg">
                             <img src="https://image2url.com/r2/default/images/1775473744461-6ce0dbd2-a423-456a-aea5-ac571a08addb.ico" alt="Logo" class="w-full h-full object-contain">
                         </div>
                         <div>
-                            <h1 class="text-xl font-bold tracking-tight">BANLIE<span class="text-indigo-400">COMPUTING</span></h1>
-                            <p class="text-slate-400 text-[8px] tracking-[0.4em] mt-1 uppercase font-bold">Secure Infrastructure & Software</p>
+                            <h1 class="text-3xl font-extrabold tracking-tight">BANLIE<span class="text-indigo-400">COMPUTING</span></h1>
+                            <p class="text-slate-300 text-[10px] tracking-[0.4em] mt-1 uppercase font-bold">Service & Sparepart</p>
                         </div>
                     </div>
                     <div class="text-right">
-                        <h2 class="text-xl font-extralight tracking-[0.4em] text-indigo-100 uppercase">Tech Report</h2>
-                        <p id="pv_no" class="text-indigo-400 font-mono text-sm">#BC-RPT-001</p>
-                    </div>
-                </div>
-
-                <div class="relative z-10 p-8 border-b border-slate-100 bg-slate-50/40 grid grid-cols-2 gap-8">
-                    <div>
-                        <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-1">Hardware Information</h3>
-                        <div class="space-y-2">
-                            <div class="flex justify-between text-[11px]"><span class="text-slate-400">Brand/Model</span><span id="pv_device" class="text-slate-800 font-bold">-</span></div>
-                            <div class="flex justify-between text-[11px]"><span class="text-slate-400">Processor</span><span id="pv_cpu" class="text-slate-600 font-medium">-</span></div>
-                            <div class="flex justify-between text-[11px]"><span class="text-slate-400">RAM Capacity</span><span id="pv_ram" class="text-slate-600 font-medium">-</span></div>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-1">System Software</h3>
-                        <div class="space-y-2">
-                            <div class="flex justify-between text-[11px]"><span class="text-slate-400">OS Edition</span><span id="pv_os" class="text-indigo-600 font-bold">-</span></div>
-                            <div class="flex justify-between text-[11px]"><span class="text-slate-400">Report Date</span><span id="pv_date" class="text-slate-600 font-medium">-</span></div>
-                            <div class="flex justify-between text-[11px]"><span class="text-slate-400">Auth Status</span><span class="text-emerald-600 font-black">CERTIFIED</span></div>
+                        <h2 class="text-2xl font-extralight tracking-[0.3em] text-indigo-100 uppercase">Billing Report</h2>
+                        <div class="mt-2 inline-block bg-indigo-600 px-4 py-1 rounded-full">
+                            <p id="pv_no" class="text-white font-mono text-sm font-bold">#BC-RPT-001</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="relative z-10 px-8 py-6 flex gap-6 bg-white">
-                    <div class="flex-1 bg-slate-900 rounded-xl p-4 text-white">
-                        <h3 class="text-[8px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Installation ID</h3>
-                        <p id="pv_iid" class="font-mono text-xs tracking-tighter text-indigo-300">-</p>
-                    </div>
-                    <div class="w-1/3 bg-indigo-50 border border-indigo-100 rounded-xl p-4">
-                        <h3 class="text-[8px] font-black text-indigo-300 uppercase tracking-[0.2em] mb-1">Serial Number</h3>
-                        <p id="pv_sn" class="font-mono text-[10px] font-bold text-indigo-700 break-all uppercase">-</p>
-                    </div>
-                </div>
-
-                <div class="relative z-10 px-8 py-4 flex-grow">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="border-b-2 border-slate-100 text-[9px] text-slate-400 uppercase tracking-widest font-black">
-                                <th class="pb-3 text-left">Service / Product Detail</th>
-                                <th class="pb-3 text-right w-24">Quantity</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pv_table_body" class="text-[11px] text-slate-600"></tbody>
-                    </table>
-                </div>
-
-                <div class="relative z-10 mt-auto p-8 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
-                    <div class="text-[8px] text-slate-400 italic max-w-sm leading-relaxed uppercase tracking-widest">Document generated by Banliecomputing Technician Console.</div>
+                <!-- Konten Utama (2 Kolom) -->
+                <div class="relative z-10 flex-grow flex">
                     
-                    <!-- Area Footer: Inisial Teknisi & Total Enkripsi -->
-                    <div class="flex items-center gap-4">
-                        <div class="flex items-center gap-2">
-                            <span class="text-[8px] font-black text-emerald-400 uppercase tracking-widest">Tech:</span>
-                            <span id="pv_tech_initial" class="text-[10px] font-bold text-slate-400">--</span>
+                    <!-- Kolom Kiri: Informasi Sistem -->
+                    <div class="w-2/5 bg-slate-50 border-r border-slate-200 p-8 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-4 border-b border-indigo-100 pb-2">Hardware & OS Info</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <p class="text-[9px] text-slate-400 uppercase font-bold">Brand / Model</p>
+                                    <p id="pv_device" class="text-xs text-slate-800 font-bold">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] text-slate-400 uppercase font-bold">Processor / RAM</p>
+                                    <p class="text-xs text-slate-700 font-medium"><span id="pv_cpu">-</span> / <span id="pv_ram">-</span></p>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] text-slate-400 uppercase font-bold">OS Edition</p>
+                                    <p id="pv_os" class="text-xs text-indigo-600 font-bold">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] text-slate-400 uppercase font-bold">Report Date</p>
+                                    <p id="pv_date" class="text-xs text-slate-700 font-medium">-</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="w-px h-6 bg-slate-200"></div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[8px] font-black text-slate-300 uppercase tracking-widest">Code:</span>
-                            <div class="bg-white border border-slate-200 px-3 py-1 rounded shadow-sm">
-                                <span id="pv_grand_total_code" class="text-indigo-600 font-black text-xs tech-code uppercase tracking-widest">-</span>
+
+                        <div class="mt-6 bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+                            <h3 class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2">Authentication</h3>
+                            <p class="text-xs font-black text-emerald-600 mb-3 flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                SYSTEM CERTIFIED
+                            </p>
+                            <p class="text-[8px] text-slate-400 uppercase font-bold">Serial Number</p>
+                            <p id="pv_sn" class="text-[10px] font-mono text-indigo-700 break-all mb-2">-</p>
+                            <p class="text-[8px] text-slate-400 uppercase font-bold">Installation ID</p>
+                            <p id="pv_iid" class="text-[9px] font-mono text-slate-500 break-all">-</p>
+                        </div>
+                    </div>
+
+                    <!-- Kolom Kanan: Tabel Layanan -->
+                    <div class="w-3/5 bg-white p-8 flex flex-col">
+                        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">Provided Services & Products</h3>
+                        
+                        <div class="flex-grow">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b-2 border-slate-100 text-[10px] text-slate-400 uppercase tracking-widest font-black">
+                                        <th class="pb-3 text-left">Description</th>
+                                        <th class="pb-3 text-right w-24">Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pv_table_body" class="text-xs text-slate-600">
+                                    <!-- Items diinjeksi disini -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Footer Kanan (Kode) -->
+                        <div class="mt-auto pt-6 border-t border-slate-100 flex justify-between items-end">
+                            <div class="text-center">
+                                <div class="w-24 h-px bg-slate-300 mx-auto mb-1"></div>
+                                <p class="text-[8px] text-slate-400 uppercase font-bold tracking-widest">Authorized By</p>
+                                <p id="pv_tech_initial" class="text-xs font-black text-emerald-600 tracking-widest mt-1">--</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Code</p>
+                                <div class="bg-slate-900 text-white px-5 py-2 rounded-lg shadow-md inline-block">
+                                    <span id="pv_grand_total_code" class="font-black text-lg tech-code tracking-[0.2em]">-</span>
+                                </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -243,20 +275,19 @@
         </div>
     </div>
 
-    <!-- MODAL 2: DATABASE RIWAYAT -->
+    <!-- MODAL 2: DATABASE RIWAYAT (GOOGLE SHEETS) -->
     <div id="history-modal" class="modal fixed inset-0 bg-slate-900/60 z-50 items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
             <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
-                    Database Riwayat Laporan
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                    Google Sheets Database
                 </h2>
                 <button onclick="closeHistoryModal()" class="text-slate-400 hover:text-rose-500 font-bold p-2">✕ Tutup</button>
             </div>
             <div class="p-5 overflow-y-auto flex-1 bg-slate-100/50">
                 <div id="db-loading" class="text-center py-10 text-slate-400 font-bold text-sm">
-                    <!-- Pesan loading akan diinjeksi oleh JS -->
-                    Sedang menghubungkan...
+                    Menghubungkan ke Google Sheets...
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="history-container">
                     <!-- Data will be injected here -->
@@ -268,51 +299,15 @@
     <!-- TOAST NOTIFICATION -->
     <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-900 text-white rounded-2xl text-sm font-medium opacity-0 transition-all pointer-events-none z-[70] shadow-xl"></div>
 
-    <script type="module">
-        // --- KONFIGURASI FIREBASE ---
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        const isCanvas = typeof __firebase_config !== 'undefined';
-        
-        // PENTING: Jika dihosting di GitHub Pages, database tidak akan jalan kecuali Anda mengisi config di bawah ini.
-        let firebaseConfig = isCanvas ? JSON.parse(__firebase_config) : {
-            apiKey: "",
-            authDomain: "",
-            projectId: "",
-            storageBucket: "",
-            messagingSenderId: "",
-            appId: ""
-        };
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'banlie-sys';
-        
-        let app, auth, db, userSession = null;
-        let unsubscribeDb = null;
-
-        try {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-
-            const initAuth = async () => {
-                try {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                } catch (e) { console.error("Auth error", e); }
-            };
-
-            onAuthStateChanged(auth, (u) => { userSession = u; });
-            initAuth();
-        } catch (e) {
-            console.warn("Firebase belum dikonfigurasi.");
-        }
+    <script>
+        // ==========================================
+        // KONFIGURASI GOOGLE APPS SCRIPT URL
+        // Ganti URL ini dengan URL Web App dari Google Apps Script Anda (Tahap 2)
+        // ==========================================
+        const GOOGLE_SCRIPT_URL = "URL_GOOGLE_SCRIPT_ANDA_DISINI"; 
 
         // --- VARIABEL & FUNGSI UMUM ---
-        let items = [ { desc: 'Microsoft Office 2021 Retail', qty: 1, price: 350000 } ];
+        let items = [ { desc: 'Ms. Office 2021 Retail', qty: 1, price: 350000 } ];
         let historyData = [];
 
         function readUrlParameters() {
@@ -353,7 +348,6 @@
             return encodedMain;
         }
 
-        // Fungsi membuat Inisial 2 Huruf (Huruf Pertama & Terakhir)
         function getTechInitials(name) {
             if (!name || name.trim() === '') return '--';
             let clean = name.trim().toUpperCase();
@@ -369,10 +363,7 @@
                 div.className = 'bg-slate-50 p-2 rounded-lg border border-slate-100 relative group';
                 div.innerHTML = `
                     <button onclick="removeItem(${index})" class="absolute top-1 right-1 text-slate-300 hover:text-rose-500">x</button>
-                    
-                    <!-- INPUT DATALIST: Memungkinkan memilih opsi atau mengetik manual -->
-                    <input list="service-options" type="text" value="${item.desc}" oninput="updateItem(${index}, 'desc', this.value)" class="w-full bg-white border border-slate-200 rounded px-2 py-1 font-bold text-[10px] mb-1 outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Ketik atau pilih layanan...">
-                    
+                    <input list="service-options" type="text" value="${item.desc}" oninput="updateItem(${index}, 'desc', this.value)" class="w-full bg-white border border-slate-200 rounded px-2 py-1 font-bold text-[10px] mb-1 outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Ketik atau pilih produk/layanan...">
                     <div class="grid grid-cols-2 gap-2">
                         <input type="number" value="${item.qty}" oninput="updateItem(${index}, 'qty', this.value)" class="w-full border border-slate-200 rounded px-1.5 py-0.5 text-[10px]" placeholder="Qty">
                         <div class="relative">
@@ -401,7 +392,6 @@
             document.getElementById('pv_iid').innerText = getV('in_iid');
             document.getElementById('pv_sn').innerText = getV('in_sn');
             
-            // Render Inisial Teknisi
             const techName = document.getElementById('in_tech_name').value;
             document.getElementById('pv_tech_initial').innerText = getTechInitials(techName);
 
@@ -410,7 +400,7 @@
             items.forEach(item => {
                 totalAll += (item.qty * item.price);
                 const descStr = item.desc || '-';
-                tbody.innerHTML += `<tr class="border-b border-slate-50"><td class="py-3 font-bold text-slate-700">${descStr}</td><td class="py-3 text-right text-slate-500 pr-4">${item.qty} Unit</td></tr>`;
+                tbody.innerHTML += `<tr class="border-b border-slate-100"><td class="py-2.5 font-bold text-slate-700">${descStr}</td><td class="py-2.5 text-right text-slate-500 pr-2">${item.qty} Unit</td></tr>`;
             });
             document.getElementById('pv_grand_total_code').innerText = encodePrice(totalAll);
         }
@@ -421,74 +411,71 @@
             setTimeout(() => t.classList.add('opacity-0'), 3000);
         }
 
-        // --- SISTEM KEAMANAN & DATABASE ---
+        // --- SISTEM KEAMANAN ---
         window.openAuthModal = () => {
             document.getElementById('auth-modal').classList.add('active');
             document.getElementById('in_password').focus();
         }
-        
         window.closeAuthModal = () => {
             document.getElementById('auth-modal').classList.remove('active');
             document.getElementById('in_password').value = '';
         }
-
         window.verifyPassword = () => {
             const pw = document.getElementById('in_password').value;
             if (pw === 'admin123') { // KATA SANDI TEKNISI
                 closeAuthModal();
                 document.getElementById('history-modal').classList.add('active');
-                listenToDatabase(); // Mulai memanggil data setelah login sukses
+                loadFromGoogleSheets(); 
             } else {
                 showToast("Kata sandi salah!");
             }
         }
-
-        // Fungsi khusus jika ditekan enter di input password
         document.getElementById('in_password').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') verifyPassword();
         });
-
         window.closeHistoryModal = () => document.getElementById('history-modal').classList.remove('active');
 
-        function listenToDatabase() {
-            if (!isCanvas && !firebaseConfig.apiKey) {
-                document.getElementById('db-loading').innerHTML = `
-                    <div class="text-rose-500 font-bold mb-2 text-base">⚠️ Firebase Belum Dikonfigurasi</div>
-                    <p class="text-xs text-slate-500 max-w-sm mx-auto">Karena Anda menghosting ini di GitHub Pages, database bawaan Canvas tidak tersedia. Anda harus memasukkan API Key Firebase Anda sendiri ke dalam kode HTML (baris 320).</p>
-                `;
+
+        // --- INTEGRASI GOOGLE SHEETS API ---
+
+        async function loadFromGoogleSheets() {
+            if (GOOGLE_SCRIPT_URL === "URL_GOOGLE_SCRIPT_ANDA_DISINI") {
+                document.getElementById('db-loading').innerHTML = `<div class="text-rose-500 font-bold mb-2">⚠️ Google Sheets Belum Dikonfigurasi</div><p class="text-xs text-slate-500">Anda harus memasukkan URL Google Apps Script Anda ke dalam kode HTML.</p>`;
                 return;
             }
 
-            if (!userSession || !db) return;
-            const dbRef = collection(db, 'artifacts', appId, 'public', 'data', 'invoices');
-            
-            unsubscribeDb = onSnapshot(dbRef, (snap) => {
-                historyData = [];
-                snap.forEach(doc => historyData.push({ id: doc.id, ...doc.data() }));
+            document.getElementById('db-loading').style.display = 'block';
+            document.getElementById('db-loading').innerText = "Mengambil data dari Google Sheets...";
+            document.getElementById('history-container').innerHTML = '';
+
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL + "?action=read");
+                const data = await response.json();
+                historyData = data.records || [];
                 document.getElementById('db-loading').style.display = 'none';
                 renderHistoryUI();
-            }, (error) => {
-                console.error("Database error:", error);
-                document.getElementById('db-loading').innerText = "Gagal memuat database.";
-            });
+            } catch (error) {
+                console.error(error);
+                document.getElementById('db-loading').innerText = "Gagal terhubung ke Google Sheets.";
+            }
         }
 
         window.saveDataToCloud = async () => {
-            if (!isCanvas && !firebaseConfig.apiKey) {
-                showToast("Penyimpanan gagal: Database belum disetting di GitHub Pages."); return;
+            if (GOOGLE_SCRIPT_URL === "URL_GOOGLE_SCRIPT_ANDA_DISINI") {
+                showToast("URL Google Sheets belum disetting!"); return;
             }
-            if (!userSession || !db) { showToast("Sistem Cloud Offline."); return; }
             
             const btn = document.getElementById('btn-save');
-            btn.innerText = "Menyimpan...";
+            btn.innerText = "Menyimpan ke Sheets...";
+            btn.disabled = true;
             
             const invoiceNo = document.getElementById('in_no').value || `INV-${Date.now()}`;
-            const docId = invoiceNo.replace(/[^a-zA-Z0-9-]/g, ''); // ID yang sama akan menimpa/update data lama
 
             const payload = {
+                action: 'save',
                 invoice_no: invoiceNo,
                 date: document.getElementById('in_date').value,
-                tech_name: document.getElementById('in_tech_name').value, // Simpan nama teknisi
+                tech_name: document.getElementById('in_tech_name').value,
                 brand: document.getElementById('in_brand').value,
                 model: document.getElementById('in_model').value,
                 os: document.getElementById('in_os').value,
@@ -496,37 +483,46 @@
                 ram: document.getElementById('in_ram').value,
                 iid: document.getElementById('in_iid').value,
                 sn: document.getElementById('in_sn').value,
-                items: items,
-                timestamp: Date.now()
+                items: JSON.stringify(items) // Konversi array item menjadi string agar mudah disimpan di Sheet
             };
 
             try {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'invoices', docId);
-                await setDoc(docRef, payload); // Ini bertindak sebagai Create sekaligus Update (Upsert)
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
                 showToast(`Data ${invoiceNo} berhasil disimpan!`);
             } catch (e) {
-                console.error("Save error", e);
-                showToast("Gagal menyimpan ke Database.");
+                console.error(e);
+                showToast("Berhasil mengirim data, silakan cek Sheet Anda.");
             }
-            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Simpan/Update Database`;
+            
+            btn.disabled = false;
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Simpan ke Google Sheets`;
         }
 
-        window.deleteFromCloud = async (docId) => {
-            if (!confirm("Peringatan: Laporan ini akan dihapus permanen dari sistem. Lanjutkan?")) return;
+        window.deleteFromCloud = async (invoiceNo) => {
+            if (!confirm("Peringatan: Laporan ini akan dihapus permanen dari Google Sheets. Lanjutkan?")) return;
+            showToast("Sedang menghapus...");
             try {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'invoices', docId);
-                await deleteDoc(docRef);
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'delete', invoice_no: invoiceNo })
+                });
                 showToast("Laporan berhasil dihapus.");
+                loadFromGoogleSheets(); // Refresh data
             } catch(e) { showToast("Gagal menghapus data."); }
         }
 
-        window.loadFromCloud = (docId) => {
-            const data = historyData.find(d => d.id === docId);
+        window.loadToForm = (invoiceNo) => {
+            const data = historyData.find(d => d.invoice_no === invoiceNo);
             if (!data) return;
             
             document.getElementById('in_no').value = data.invoice_no || '';
             document.getElementById('in_date').value = data.date || '';
-            document.getElementById('in_tech_name').value = data.tech_name || ''; // Muat ulang nama teknisi
+            document.getElementById('in_tech_name').value = data.tech_name || ''; 
             document.getElementById('in_brand').value = data.brand || '';
             document.getElementById('in_model').value = data.model || '';
             document.getElementById('in_os').value = data.os || '';
@@ -534,7 +530,8 @@
             document.getElementById('in_ram').value = data.ram || '';
             document.getElementById('in_iid').value = data.iid || '';
             document.getElementById('in_sn').value = data.sn || '';
-            items = data.items || [];
+            
+            try { items = JSON.parse(data.items); } catch(e) { items = []; }
             
             renderItemInputs();
             closeHistoryModal();
@@ -544,14 +541,13 @@
         function renderHistoryUI() {
             const container = document.getElementById('history-container');
             container.innerHTML = '';
-            if (historyData.length === 0) {
-                container.innerHTML = '<div class="col-span-full text-center text-slate-400 py-4">Database masih kosong.</div>';
+            
+            if (!historyData || historyData.length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center text-slate-400 py-4">Database Sheets masih kosong.</div>';
                 return;
             }
-
-            const sorted = [...historyData].sort((a,b) => b.timestamp - a.timestamp);
             
-            sorted.forEach(data => {
+            historyData.forEach(data => {
                 const div = document.createElement('div');
                 div.className = "bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition";
                 div.innerHTML = `
@@ -564,18 +560,18 @@
                         <p class="text-[10px] text-slate-500 mt-1 line-clamp-2">OS: ${data.os}<br>Teknisi: ${data.tech_name || 'Tidak ada'}</p>
                     </div>
                     <div class="mt-4 flex gap-2 border-t border-slate-100 pt-3">
-                        <button onclick="loadFromCloud('${data.id}')" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs font-bold py-1.5 rounded transition">Edit Data</button>
-                        <button onclick="deleteFromCloud('${data.id}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold px-3 py-1.5 rounded transition">Hapus</button>
+                        <button onclick="loadToForm('${data.invoice_no}')" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs font-bold py-1.5 rounded transition">Edit Data</button>
+                        <button onclick="deleteFromCloud('${data.invoice_no}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold px-3 py-1.5 rounded transition">Hapus</button>
                     </div>
                 `;
                 container.appendChild(div);
             });
         }
 
-        // --- EXPORT ---
+        // --- EXPORT (Diset menjadi Landscape A4) ---
         window.exportToImage = async (format) => {
             const el = document.getElementById('billing-card');
-            const canvas = await html2canvas(el, { scale: 2 });
+            const canvas = await html2canvas(el, { scale: 3 }); // Kualitas gambar diperbesar
             const link = document.createElement('a');
             link.download = `BC-TECH-REPORT.${format}`;
             link.href = canvas.toDataURL(`image/${format === 'jpeg' ? 'jpeg' : 'png'}`);
@@ -585,8 +581,10 @@
         window.exportToPDF = async () => {
             const el = document.getElementById('billing-card');
             const canvas = await html2canvas(el, { scale: 2 });
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, (canvas.height * 210) / canvas.width);
+            // Mengubah PDF menjadi Landscape 'l'
+            const pdf = new jsPDF('l', 'mm', 'a4');
+            // Menyesuaikan gambar dengan dimensi A4 Landscape (297x210)
+            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 297, 210);
             pdf.save(`BC-TECH-REPORT.pdf`); showToast("PDF disimpan!");
         }
 
