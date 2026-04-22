@@ -161,9 +161,9 @@
                     </div>
                     <div class="text-right">
                         <h2 class="text-lg font-light tracking-[0.2em] text-indigo-100 uppercase">Billing Report</h2>
-                        <!-- Perbaikan Invoice Export: Menggunakan INLINE CSS -->
-                        <div class="mt-1 inline-block" style="background-color: #4f46e5; padding: 2px 8px; border-radius: 4px;">
-                            <p id="pv_no" style="color: #ffffff; font-family: monospace; font-size: 10px; font-weight: bold; margin: 0;">#BC-RPT-001</p>
+                        <!-- Perbaikan Struktur untuk html2canvas -->
+                        <div class="mt-1">
+                            <span id="pv_no" class="bg-indigo-600 text-white px-3 py-1 rounded font-mono text-[10px] font-bold inline-block border border-indigo-700" style="background-color:#4f46e5; color:#ffffff;">#BC-RPT-001</span>
                         </div>
                     </div>
                 </div>
@@ -298,9 +298,9 @@
                     </div>
                     <div class="text-right">
                         <h2 class="text-lg font-light tracking-[0.2em] text-indigo-100 uppercase">Billing Report</h2>
-                        <!-- Perbaikan Invoice Export: INLINE CSS -->
-                        <div class="mt-1 inline-block" style="background-color: #4f46e5; padding: 2px 8px; border-radius: 4px;">
-                            <p id="prev_no" style="color: #ffffff; font-family: monospace; font-size: 10px; font-weight: bold; margin: 0;">#BC-RPT-001</p>
+                        <!-- Perbaikan Struktur untuk html2canvas -->
+                        <div class="mt-1">
+                            <span id="prev_no" class="bg-indigo-600 text-white px-3 py-1 rounded font-mono text-[10px] font-bold inline-block border border-indigo-700" style="background-color:#4f46e5; color:#ffffff;">#BC-RPT-001</span>
                         </div>
                     </div>
                 </div>
@@ -671,23 +671,27 @@
         // --- EXPORT GLOBAL ---
         window.exportToImage = async (format, elementId, nameInputId) => {
             const el = document.getElementById(elementId);
-            const fileName = document.getElementById(nameInputId).innerText || document.getElementById(nameInputId).value;
+            let rawName = document.getElementById(nameInputId).innerText || document.getElementById(nameInputId).value || 'Report';
+            // Membersihkan simbol # agar nama file aman untuk didownload
+            let safeName = rawName.replace(/[^a-zA-Z0-9-]/g, '');
             const canvas = await html2canvas(el, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: "#ffffff" }); 
             const link = document.createElement('a');
-            link.download = `BC-REPORT-${fileName}.${format}`;
+            link.download = `BC-REPORT-${safeName}.${format}`;
             link.href = canvas.toDataURL(`image/${format === 'jpeg' ? 'jpeg' : 'png'}`);
             link.click(); showToast(`Gambar ${format.toUpperCase()} disimpan!`);
         }
 
         window.exportToPDF = async (elementId, nameInputId) => {
             const el = document.getElementById(elementId);
-            const fileName = document.getElementById(nameInputId).innerText || document.getElementById(nameInputId).value;
+            let rawName = document.getElementById(nameInputId).innerText || document.getElementById(nameInputId).value || 'Report';
+            // Membersihkan simbol # agar nama file aman untuk didownload
+            let safeName = rawName.replace(/[^a-zA-Z0-9-]/g, '');
             const canvas = await html2canvas(el, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: "#ffffff" });
             
             // Format PDF A5 Landscape (210mm x 148mm)
             const pdf = new jsPDF('l', 'mm', 'a5');
             pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 148);
-            pdf.save(`BC-REPORT-${fileName}.pdf`); showToast("PDF berhasil dibuat!");
+            pdf.save(`BC-REPORT-${safeName}.pdf`); showToast("PDF berhasil dibuat!");
         }
 
         readUrlParameters();
