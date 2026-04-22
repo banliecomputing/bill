@@ -12,16 +12,16 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
         
-        /* Ukuran Sertifikat Landscape A4 (297mm x 210mm) */
+        /* Ukuran Sertifikat Diperkecil menjadi A5 Landscape (210mm x 148mm) */
         .invoice-container { 
             background: white; position: relative; overflow: hidden; 
-            height: 210mm; width: 297mm; margin: 0 auto; 
+            height: 148mm; width: 210mm; margin: 0 auto; 
             display: flex; flex-direction: column;
         }
         
-        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-20deg); font-size: 6rem; font-weight: 900; color: rgba(0, 0, 0, 0.02); white-space: nowrap; pointer-events: none; z-index: 0; user-select: none; text-transform: uppercase; }
+        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-20deg); font-size: 5rem; font-weight: 900; color: rgba(0, 0, 0, 0.02); white-space: nowrap; pointer-events: none; z-index: 0; user-select: none; text-transform: uppercase; }
         .tech-code { font-family: 'Courier New', Courier, monospace; font-weight: bold; }
-        @media (max-width: 1024px) { .invoice-container { width: 100%; height: auto; min-height: 210mm; } }
+        @media (max-width: 1024px) { .invoice-container { width: 100%; height: auto; min-height: 148mm; } }
         @media print { .no-print { display: none; } body { background: white; padding: 0; } .invoice-container { box-shadow: none; border: none; margin: 0; } }
         .modal { display: none; }
         .modal.active { display: flex; }
@@ -53,7 +53,7 @@
             <div class="mb-6 flex justify-between items-center">
                 <h2 class="text-xl font-extrabold text-slate-800 flex items-center gap-2">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden">
-                        <img src="https://image2url.com/r2/default/images/1775473744461-6ce0dbd2-a423-456a-aea5-ac571a08addb.ico" alt="Logo" class="w-full h-full object-cover">
+                        <img src="https://image2url.com/r2/default/images/1775473744461-6ce0dbd2-a423-456a-aea5-ac571a08addb.ico" alt="Logo" crossorigin="anonymous" class="w-full h-full object-cover">
                     </div>
                     Tech Console
                 </h2>
@@ -63,7 +63,7 @@
                 </button>
             </div>
 
-            <div class="space-y-5">
+            <div class="space-y-4">
                 <section>
                     <div class="grid grid-cols-3 gap-3">
                         <div>
@@ -81,64 +81,64 @@
                     </div>
                 </section>
 
-                <section class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Device & OS Info</h3>
-                    <div class="grid grid-cols-2 gap-3 mb-3">
+                <section class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-2">Device & OS Info</h3>
+                    <div class="grid grid-cols-2 gap-3 mb-2">
                         <div>
-                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Merek Laptop</label>
-                            <input type="text" id="in_brand" value="-" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs outline-none focus:ring-1 focus:ring-indigo-500">
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Merek Laptop</label>
+                            <input type="text" id="in_brand" value="-" oninput="updatePreview()" class="w-full px-2 py-1 border border-slate-200 rounded text-xs outline-none focus:ring-1 focus:ring-indigo-500">
                         </div>
                         <div>
-                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Tipe/Model</label>
-                            <input type="text" id="in_model" value="-" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs outline-none focus:ring-1 focus:ring-indigo-500">
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Tipe/Model</label>
+                            <input type="text" id="in_model" value="-" oninput="updatePreview()" class="w-full px-2 py-1 border border-slate-200 rounded text-xs outline-none focus:ring-1 focus:ring-indigo-500">
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Edisi Windows</label>
-                        <input type="text" id="in_os" value="-" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs outline-none focus:ring-1 focus:ring-indigo-500">
+                    <div class="mb-2">
+                        <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Edisi Windows</label>
+                        <input type="text" id="in_os" value="-" oninput="updatePreview()" class="w-full px-2 py-1 border border-slate-200 rounded text-xs outline-none focus:ring-1 focus:ring-indigo-500">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">RAM</label>
-                            <input type="text" id="in_ram" value="-" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs outline-none">
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">RAM</label>
+                            <input type="text" id="in_ram" value="-" oninput="updatePreview()" class="w-full px-2 py-1 border border-slate-200 rounded text-xs outline-none">
                         </div>
                         <div>
-                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Processor</label>
-                            <input type="text" id="in_cpu" value="-" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs outline-none">
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Processor</label>
+                            <input type="text" id="in_cpu" value="-" oninput="updatePreview()" class="w-full px-2 py-1 border border-slate-200 rounded text-xs outline-none">
                         </div>
                     </div>
                 </section>
 
-                <section class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100">
-                    <h3 class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mb-3">License Identifiers</h3>
-                    <div class="space-y-3">
+                <section class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
+                    <h3 class="text-[9px] font-bold text-indigo-600 uppercase tracking-widest mb-2">License Identifiers</h3>
+                    <div class="space-y-2">
                         <div>
-                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Installation ID (IID)</label>
-                            <input type="text" id="in_iid" value="-" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs font-mono outline-none">
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Installation ID (IID)</label>
+                            <input type="text" id="in_iid" value="-" oninput="updatePreview()" class="w-full px-2 py-1 border border-slate-200 rounded text-xs font-mono outline-none">
                         </div>
                         <div>
-                            <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Serial Number (S/N)</label>
-                            <input type="text" id="in_sn" value="-" oninput="updatePreview()" class="w-full px-2 py-1.5 border border-slate-200 rounded text-xs font-mono uppercase outline-none">
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Serial Number (S/N)</label>
+                            <input type="text" id="in_sn" value="-" oninput="updatePreview()" class="w-full px-2 py-1 border border-slate-200 rounded text-xs font-mono uppercase outline-none">
                         </div>
                     </div>
                 </section>
 
                 <section>
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Pricing (Internal Only)</h3>
-                        <button onclick="addItem()" class="text-[10px] bg-indigo-600 text-white font-bold px-3 py-1 rounded hover:bg-indigo-700 transition">+ Item Baru</button>
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Pricing (Internal Only)</h3>
+                        <button onclick="addItem()" class="text-[9px] bg-indigo-600 text-white font-bold px-2 py-1 rounded hover:bg-indigo-700 transition">+ Item Baru</button>
                     </div>
                     <div id="items-input-container" class="space-y-2"></div>
                 </section>
 
-                <section class="pt-4 border-t border-slate-100 flex flex-col gap-2 pb-10">
-                    <button onclick="saveDataToCloud()" id="btn-save" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg text-sm font-bold transition flex justify-center items-center gap-2">
+                <section class="pt-3 border-t border-slate-100 flex flex-col gap-2 pb-10">
+                    <button onclick="saveDataToCloud()" id="btn-save" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg text-sm font-bold transition flex justify-center items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                         Simpan ke Google Sheets
                     </button>
                     <div class="grid grid-cols-2 gap-2">
-                        <button onclick="exportToPDF('billing-card', 'in_no')" class="bg-rose-600 text-white py-2 rounded text-xs font-bold transition">Ekspor PDF</button>
-                        <button onclick="exportToImage('png', 'billing-card', 'in_no')" class="bg-indigo-600 text-white py-2 rounded text-xs font-bold transition">Ekspor PNG</button>
+                        <button onclick="exportToPDF('billing-card', 'in_no')" class="bg-rose-600 text-white py-2 rounded-lg text-xs font-bold transition">Ekspor PDF (A5)</button>
+                        <button onclick="exportToImage('png', 'billing-card', 'in_no')" class="bg-indigo-600 text-white py-2 rounded-lg text-xs font-bold transition">Ekspor PNG</button>
                     </div>
                 </section>
             </div>
@@ -146,65 +146,76 @@
 
         <!-- PRATINJAU DOKUMEN UTAMA (Kanan) -->
         <div class="lg:w-2/3 w-full p-4 lg:p-8 lg:h-screen lg:overflow-y-auto flex justify-center bg-slate-200">
-            <div id="billing-card" class="invoice-container shadow-2xl border border-slate-200 rounded-xl">
+            <!-- Desain A5 Compact -->
+            <div id="billing-card" class="invoice-container shadow-2xl border border-slate-200 rounded-lg">
                 <div class="watermark">BANLIECOMPUTING</div>
-                <div class="relative z-10 bg-slate-900 px-10 py-8 text-white flex justify-between items-center border-b-4 border-indigo-500">
-                    <div class="flex items-center gap-5">
-                        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center overflow-hidden p-1 shadow-lg">
-                            <img src="https://image2url.com/r2/default/images/1775473744461-6ce0dbd2-a423-456a-aea5-ac571a08addb.ico" alt="Logo" class="w-full h-full object-contain">
+                
+                <div class="relative z-10 bg-slate-900 px-6 py-4 text-white flex justify-between items-center border-b-4 border-indigo-500">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center overflow-hidden p-1 shadow-md">
+                            <!-- crossorigin="anonymous" membantu html2canvas memproses gambar eksternal -->
+                            <img src="https://image2url.com/r2/default/images/1775473744461-6ce0dbd2-a423-456a-aea5-ac571a08addb.ico" crossorigin="anonymous" alt="Logo" class="w-full h-full object-contain">
                         </div>
                         <div>
-                            <h1 class="text-3xl font-extrabold tracking-tight">BANLIE<span class="text-indigo-400">COMPUTING</span></h1>
-                            <p class="text-slate-300 text-[10px] tracking-[0.4em] mt-1 uppercase font-bold">Service & Sparepart</p>
+                            <h1 class="text-xl font-extrabold tracking-tight">BANLIE<span class="text-indigo-400">COMPUTING</span></h1>
+                            <p class="text-slate-300 text-[7px] tracking-[0.4em] uppercase font-bold">Service & Sparepart</p>
                         </div>
                     </div>
                     <div class="text-right">
-                        <h2 class="text-2xl font-extralight tracking-[0.3em] text-indigo-100 uppercase">Billing Report</h2>
-                        <div class="mt-2 inline-block bg-indigo-600 px-4 py-1 rounded-full">
-                            <p id="pv_no" class="text-white font-mono text-sm font-bold">#BC-RPT-001</p>
+                        <h2 class="text-lg font-light tracking-[0.2em] text-indigo-100 uppercase">Billing Report</h2>
+                        <div class="mt-1 bg-indigo-600 px-3 py-0.5 rounded-md inline-block">
+                            <p id="pv_no" class="text-white font-mono text-[10px] font-bold">#BC-RPT-001</p>
                         </div>
                     </div>
                 </div>
+
                 <div class="relative z-10 flex-grow flex">
-                    <div class="w-2/5 bg-slate-50 border-r border-slate-200 p-8 flex flex-col justify-between">
+                    <!-- Kolom Kiri -->
+                    <div class="w-[45%] bg-slate-50 border-r border-slate-200 p-5 flex flex-col justify-between">
                         <div>
-                            <h3 class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-4 border-b border-indigo-100 pb-2">Hardware & OS Info</h3>
-                            <div class="space-y-3">
-                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">Brand / Model</p><p id="pv_device" class="text-xs text-slate-800 font-bold">-</p></div>
-                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">Processor / RAM</p><p class="text-xs text-slate-700 font-medium"><span id="pv_cpu">-</span> / <span id="pv_ram">-</span></p></div>
-                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">OS Edition</p><p id="pv_os" class="text-xs text-indigo-600 font-bold">-</p></div>
-                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">Report Date</p><p id="pv_date" class="text-xs text-slate-700 font-medium">-</p></div>
+                            <h3 class="text-[9px] font-black text-indigo-600 uppercase tracking-widest mb-3 border-b border-indigo-100 pb-1.5">Hardware & OS Info</h3>
+                            <div class="space-y-2">
+                                <div><p class="text-[7px] text-slate-400 uppercase font-bold">Brand / Model</p><p id="pv_device" class="text-[10px] text-slate-800 font-bold">-</p></div>
+                                <div><p class="text-[7px] text-slate-400 uppercase font-bold">Processor / RAM</p><p class="text-[10px] text-slate-700 font-medium"><span id="pv_cpu">-</span> / <span id="pv_ram">-</span></p></div>
+                                <div class="flex justify-between items-end">
+                                    <div><p class="text-[7px] text-slate-400 uppercase font-bold">OS Edition</p><p id="pv_os" class="text-[10px] text-indigo-600 font-bold">-</p></div>
+                                    <div class="text-right"><p class="text-[7px] text-slate-400 uppercase font-bold">Date</p><p id="pv_date" class="text-[9px] text-slate-700 font-medium">-</p></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="mt-6 bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
-                            <h3 class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2">Authentication</h3>
-                            <p class="text-xs font-black text-emerald-600 mb-3 flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> SYSTEM CERTIFIED</p>
-                            <p class="text-[8px] text-slate-400 uppercase font-bold">Serial Number</p>
-                            <p id="pv_sn" class="text-[10px] font-mono text-indigo-700 break-all mb-2">-</p>
-                            <p class="text-[8px] text-slate-400 uppercase font-bold">Installation ID</p>
-                            <p id="pv_iid" class="text-[9px] font-mono text-slate-500 break-all">-</p>
+                        
+                        <div class="mt-4 bg-white border border-slate-200 p-3 rounded-lg shadow-sm">
+                            <h3 class="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Authentication</h3>
+                            <p class="text-[9px] font-black text-emerald-600 mb-2 flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> SYSTEM CERTIFIED</p>
+                            <p class="text-[7px] text-slate-400 uppercase font-bold">Serial Number</p>
+                            <p id="pv_sn" class="text-[8px] font-mono text-indigo-700 break-all mb-1.5">-</p>
+                            <p class="text-[7px] text-slate-400 uppercase font-bold">Installation ID</p>
+                            <p id="pv_iid" class="text-[7px] font-mono text-slate-500 break-all leading-tight">-</p>
                         </div>
                     </div>
-                    <div class="w-3/5 bg-white p-8 flex flex-col">
-                        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">Provided Services & Products</h3>
+
+                    <!-- Kolom Kanan -->
+                    <div class="w-[55%] bg-white p-5 flex flex-col">
+                        <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-100 pb-1.5">Provided Services</h3>
                         <div class="flex-grow">
                             <table class="w-full">
                                 <thead>
-                                    <tr class="border-b-2 border-slate-100 text-[10px] text-slate-400 uppercase tracking-widest font-black"><th class="pb-3 text-left">Description</th><th class="pb-3 text-right w-24">Quantity</th></tr>
+                                    <tr class="border-b border-slate-100 text-[8px] text-slate-400 uppercase tracking-widest font-black"><th class="pb-2 text-left">Description</th><th class="pb-2 text-right w-16">Qty</th></tr>
                                 </thead>
-                                <tbody id="pv_table_body" class="text-xs text-slate-600"></tbody>
+                                <tbody id="pv_table_body" class="text-[9px] text-slate-600"></tbody>
                             </table>
                         </div>
-                        <div class="mt-auto pt-6 border-t border-slate-100 flex justify-between items-end">
+                        
+                        <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between items-end">
                             <div class="text-center">
-                                <div class="w-24 h-px bg-slate-300 mx-auto mb-1"></div>
-                                <p class="text-[8px] text-slate-400 uppercase font-bold tracking-widest">Authorized By</p>
-                                <p id="pv_tech_initial" class="text-xs font-black text-emerald-600 tracking-widest mt-1">--</p>
+                                <div class="w-16 h-px bg-slate-300 mx-auto mb-1"></div>
+                                <p class="text-[7px] text-slate-400 uppercase font-bold tracking-widest">Authorized By</p>
+                                <p id="pv_tech_initial" class="text-[10px] font-black text-emerald-600 tracking-widest mt-0.5">--</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Code</p>
-                                <div class="bg-slate-900 text-white px-5 py-2 rounded-lg shadow-md inline-block">
-                                    <span id="pv_grand_total_code" class="font-black text-lg tech-code tracking-[0.2em]">-</span>
+                                <p class="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Code</p>
+                                <div class="bg-slate-900 text-white px-4 py-1.5 rounded-md shadow-md inline-block">
+                                    <span id="pv_grand_total_code" class="font-black text-sm tech-code tracking-[0.2em]">-</span>
                                 </div>
                             </div>
                         </div>
@@ -239,7 +250,6 @@
                     Google Sheets Database
                 </h2>
                 <div class="flex items-center gap-4">
-                    <!-- TIMER SESI -->
                     <div id="session-timer-display" class="text-xs font-bold text-rose-500 bg-rose-50 px-3 py-1 rounded-full flex items-center gap-1 border border-rose-100">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                         Sesi: 02:00
@@ -256,7 +266,7 @@
 
     <!-- MODAL 3: PREVIEW DOKUMEN & EXPORT LANGSUNG -->
     <div id="preview-modal" class="modal fixed inset-0 bg-slate-900/95 z-[80] items-center justify-center p-4 backdrop-blur-md flex-col">
-        <div class="w-full max-w-[297mm] flex justify-between items-center mb-4">
+        <div class="w-full max-w-[210mm] flex justify-between items-center mb-4">
             <h2 class="text-white font-bold text-lg flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 Preview Sertifikat
@@ -271,62 +281,64 @@
         </div>
         
         <div class="preview-wrapper">
-            <!-- CLONE SERTIFIKAT UNTUK PREVIEW -->
-            <div id="preview-card" class="invoice-container shadow-2xl border border-slate-200 rounded-xl" style="flex-shrink: 0;">
+            <!-- CLONE SERTIFIKAT A5 UNTUK PREVIEW -->
+            <div id="preview-card" class="invoice-container shadow-2xl border border-slate-200 rounded-lg" style="flex-shrink: 0;">
                 <div class="watermark">BANLIECOMPUTING</div>
-                <div class="relative z-10 bg-slate-900 px-10 py-8 text-white flex justify-between items-center border-b-4 border-indigo-500">
-                    <div class="flex items-center gap-5">
-                        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center overflow-hidden p-1 shadow-lg">
-                            <img src="https://image2url.com/r2/default/images/1775473744461-6ce0dbd2-a423-456a-aea5-ac571a08addb.ico" alt="Logo" class="w-full h-full object-contain">
+                <div class="relative z-10 bg-slate-900 px-6 py-4 text-white flex justify-between items-center border-b-4 border-indigo-500">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center overflow-hidden p-1 shadow-md">
+                            <img src="https://image2url.com/r2/default/images/1775473744461-6ce0dbd2-a423-456a-aea5-ac571a08addb.ico" crossorigin="anonymous" alt="Logo" class="w-full h-full object-contain">
                         </div>
                         <div>
-                            <h1 class="text-3xl font-extrabold tracking-tight">BANLIE<span class="text-indigo-400">COMPUTING</span></h1>
-                            <p class="text-slate-300 text-[10px] tracking-[0.4em] mt-1 uppercase font-bold">Service & Sparepart</p>
+                            <h1 class="text-xl font-extrabold tracking-tight">BANLIE<span class="text-indigo-400">COMPUTING</span></h1>
+                            <p class="text-slate-300 text-[7px] tracking-[0.4em] uppercase font-bold">Service & Sparepart</p>
                         </div>
                     </div>
                     <div class="text-right">
-                        <h2 class="text-2xl font-extralight tracking-[0.3em] text-indigo-100 uppercase">Billing Report</h2>
-                        <div class="mt-2 inline-block bg-indigo-600 px-4 py-1 rounded-full"><p id="prev_no" class="text-white font-mono text-sm font-bold">#BC-RPT-001</p></div>
+                        <h2 class="text-lg font-light tracking-[0.2em] text-indigo-100 uppercase">Billing Report</h2>
+                        <div class="mt-1 bg-indigo-600 px-3 py-0.5 rounded-md inline-block"><p id="prev_no" class="text-white font-mono text-[10px] font-bold">#BC-RPT-001</p></div>
                     </div>
                 </div>
                 <div class="relative z-10 flex-grow flex">
-                    <div class="w-2/5 bg-slate-50 border-r border-slate-200 p-8 flex flex-col justify-between">
+                    <div class="w-[45%] bg-slate-50 border-r border-slate-200 p-5 flex flex-col justify-between">
                         <div>
-                            <h3 class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-4 border-b border-indigo-100 pb-2">Hardware & OS Info</h3>
-                            <div class="space-y-3">
-                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">Brand / Model</p><p id="prev_device" class="text-xs text-slate-800 font-bold">-</p></div>
-                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">Processor / RAM</p><p class="text-xs text-slate-700 font-medium"><span id="prev_cpu">-</span> / <span id="prev_ram">-</span></p></div>
-                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">OS Edition</p><p id="prev_os" class="text-xs text-indigo-600 font-bold">-</p></div>
-                                <div><p class="text-[9px] text-slate-400 uppercase font-bold">Report Date</p><p id="prev_date" class="text-xs text-slate-700 font-medium">-</p></div>
+                            <h3 class="text-[9px] font-black text-indigo-600 uppercase tracking-widest mb-3 border-b border-indigo-100 pb-1.5">Hardware & OS Info</h3>
+                            <div class="space-y-2">
+                                <div><p class="text-[7px] text-slate-400 uppercase font-bold">Brand / Model</p><p id="prev_device" class="text-[10px] text-slate-800 font-bold">-</p></div>
+                                <div><p class="text-[7px] text-slate-400 uppercase font-bold">Processor / RAM</p><p class="text-[10px] text-slate-700 font-medium"><span id="prev_cpu">-</span> / <span id="prev_ram">-</span></p></div>
+                                <div class="flex justify-between items-end">
+                                    <div><p class="text-[7px] text-slate-400 uppercase font-bold">OS Edition</p><p id="prev_os" class="text-[10px] text-indigo-600 font-bold">-</p></div>
+                                    <div class="text-right"><p class="text-[7px] text-slate-400 uppercase font-bold">Date</p><p id="prev_date" class="text-[9px] text-slate-700 font-medium">-</p></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="mt-6 bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
-                            <h3 class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2">Authentication</h3>
-                            <p class="text-xs font-black text-emerald-600 mb-3 flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> SYSTEM CERTIFIED</p>
-                            <p class="text-[8px] text-slate-400 uppercase font-bold">Serial Number</p>
-                            <p id="prev_sn" class="text-[10px] font-mono text-indigo-700 break-all mb-2">-</p>
-                            <p class="text-[8px] text-slate-400 uppercase font-bold">Installation ID</p>
-                            <p id="prev_iid" class="text-[9px] font-mono text-slate-500 break-all">-</p>
+                        <div class="mt-4 bg-white border border-slate-200 p-3 rounded-lg shadow-sm">
+                            <h3 class="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Authentication</h3>
+                            <p class="text-[9px] font-black text-emerald-600 mb-2 flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> SYSTEM CERTIFIED</p>
+                            <p class="text-[7px] text-slate-400 uppercase font-bold">Serial Number</p>
+                            <p id="prev_sn" class="text-[8px] font-mono text-indigo-700 break-all mb-1.5">-</p>
+                            <p class="text-[7px] text-slate-400 uppercase font-bold">Installation ID</p>
+                            <p id="prev_iid" class="text-[7px] font-mono text-slate-500 break-all leading-tight">-</p>
                         </div>
                     </div>
-                    <div class="w-3/5 bg-white p-8 flex flex-col">
-                        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">Provided Services & Products</h3>
+                    <div class="w-[55%] bg-white p-5 flex flex-col">
+                        <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-100 pb-1.5">Provided Services</h3>
                         <div class="flex-grow">
                             <table class="w-full">
-                                <thead><tr class="border-b-2 border-slate-100 text-[10px] text-slate-400 uppercase tracking-widest font-black"><th class="pb-3 text-left">Description</th><th class="pb-3 text-right w-24">Quantity</th></tr></thead>
-                                <tbody id="prev_table_body" class="text-xs text-slate-600"></tbody>
+                                <thead><tr class="border-b border-slate-100 text-[8px] text-slate-400 uppercase tracking-widest font-black"><th class="pb-2 text-left">Description</th><th class="pb-2 text-right w-16">Qty</th></tr></thead>
+                                <tbody id="prev_table_body" class="text-[9px] text-slate-600"></tbody>
                             </table>
                         </div>
-                        <div class="mt-auto pt-6 border-t border-slate-100 flex justify-between items-end">
+                        <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between items-end">
                             <div class="text-center">
-                                <div class="w-24 h-px bg-slate-300 mx-auto mb-1"></div>
-                                <p class="text-[8px] text-slate-400 uppercase font-bold tracking-widest">Authorized By</p>
-                                <p id="prev_tech_initial" class="text-xs font-black text-emerald-600 tracking-widest mt-1">--</p>
+                                <div class="w-16 h-px bg-slate-300 mx-auto mb-1"></div>
+                                <p class="text-[7px] text-slate-400 uppercase font-bold tracking-widest">Authorized By</p>
+                                <p id="prev_tech_initial" class="text-[10px] font-black text-emerald-600 tracking-widest mt-0.5">--</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Code</p>
-                                <div class="bg-slate-900 text-white px-5 py-2 rounded-lg shadow-md inline-block">
-                                    <span id="prev_grand_total_code" class="font-black text-lg tech-code tracking-[0.2em]">-</span>
+                                <p class="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Code</p>
+                                <div class="bg-slate-900 text-white px-4 py-1.5 rounded-md shadow-md inline-block">
+                                    <span id="prev_grand_total_code" class="font-black text-sm tech-code tracking-[0.2em]">-</span>
                                 </div>
                             </div>
                         </div>
@@ -344,6 +356,7 @@
         // KONFIGURASI GOOGLE APPS SCRIPT URL
         // ==========================================
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWPtL6SOtI4_AYiM6ORJg92aJkuVT20-NTBHuVF3w_QG_y8oIRktJCTM4Mx3lMBLrx/exec"; 
+        const { jsPDF } = window.jspdf; // Deklarasi pemanggil PDF agar tidak error
 
         // --- VARIABEL & FUNGSI UMUM ---
         let items = [ { desc: 'Ms. Office 2021 Retail', qty: 1, price: 350000 } ];
@@ -355,11 +368,9 @@
 
         function checkSession() {
             if (Date.now() < sessionEndTime) {
-                // Sesi masih valid, langsung buka DB
                 document.getElementById('history-modal').classList.add('active');
                 if (historyData.length === 0) loadFromGoogleSheets();
             } else {
-                // Sesi habis, minta password lagi
                 document.getElementById('auth-modal').classList.add('active');
                 document.getElementById('in_password').focus();
             }
@@ -367,7 +378,7 @@
 
         function startSessionTimer() {
             if(sessionTimerInterval) clearInterval(sessionTimerInterval);
-            sessionEndTime = Date.now() + 120000; // 2 Menit (120,000 milidetik)
+            sessionEndTime = Date.now() + 120000; 
 
             sessionTimerInterval = setInterval(() => {
                 const timeLeft = sessionEndTime - Date.now();
@@ -393,9 +404,9 @@
         
         window.verifyPassword = () => {
             const pw = document.getElementById('in_password').value;
-            if (pw === 'admin123') { // KATA SANDI TEKNISI
+            if (pw === 'admin123') { 
                 closeAuthModal();
-                startSessionTimer(); // Mulai hitung mundur 2 menit
+                startSessionTimer();
                 document.getElementById('history-modal').classList.add('active');
                 loadFromGoogleSheets(); 
             } else {
@@ -464,7 +475,7 @@
             document.getElementById('pv_tech_initial').innerText = getTechInitials(document.getElementById('in_tech_name').value);
 
             const tbody = document.getElementById('pv_table_body'); tbody.innerHTML = ''; let totalAll = 0;
-            items.forEach(item => { totalAll += (item.qty * item.price); tbody.innerHTML += `<tr class="border-b border-slate-100"><td class="py-2.5 font-bold text-slate-700">${item.desc || '-'}</td><td class="py-2.5 text-right text-slate-500 pr-2">${item.qty} Unit</td></tr>`; });
+            items.forEach(item => { totalAll += (item.qty * item.price); tbody.innerHTML += `<tr class="border-b border-slate-100"><td class="py-1.5 font-bold text-slate-700">${item.desc || '-'}</td><td class="py-1.5 text-right text-slate-500 pr-2">${item.qty} Unit</td></tr>`; });
             document.getElementById('pv_grand_total_code').innerText = encodePrice(totalAll);
         }
 
@@ -478,7 +489,6 @@
             const data = historyData.find(d => d.invoice_no === invoiceNo);
             if (!data) return;
             
-            // Masukkan data ke kotak sertifikat preview
             document.getElementById('prev_no').innerText = data.invoice_no || '-';
             document.getElementById('prev_date').innerText = data.date || '-';
             document.getElementById('prev_device').innerText = `${data.brand || '-'} ${data.model || '-'}`;
@@ -495,7 +505,7 @@
 
             previewItems.forEach(item => {
                 totalAll += (item.qty * item.price);
-                tbody.innerHTML += `<tr class="border-b border-slate-100"><td class="py-2.5 font-bold text-slate-700">${item.desc || '-'}</td><td class="py-2.5 text-right text-slate-500 pr-2">${item.qty} Unit</td></tr>`;
+                tbody.innerHTML += `<tr class="border-b border-slate-100"><td class="py-1.5 font-bold text-slate-700">${item.desc || '-'}</td><td class="py-1.5 text-right text-slate-500 pr-2">${item.qty} Unit</td></tr>`;
             });
             document.getElementById('prev_grand_total_code').innerText = encodePrice(totalAll);
 
@@ -568,9 +578,7 @@
                         <p class="text-[10px] text-slate-500 mt-1 line-clamp-2">OS: ${data.os}<br>Teknisi: ${data.tech_name || 'Tidak ada'}</p>
                     </div>
                     <div class="mt-4 flex gap-2 border-t border-slate-100 pt-3">
-                        <!-- TOMBOL PREVIEW BARU -->
                         <button onclick="openPreviewModal('${data.invoice_no}')" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 text-[10px] font-bold py-1.5 rounded transition shadow-sm border border-emerald-100">Lihat</button>
-                        
                         <button onclick="loadToForm('${data.invoice_no}')" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-[10px] font-bold py-1.5 rounded transition shadow-sm border border-indigo-100">Edit</button>
                         <button onclick="deleteFromCloud('${data.invoice_no}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-[10px] font-bold px-3 py-1.5 rounded transition shadow-sm border border-rose-100">Hapus</button>
                     </div>
@@ -579,12 +587,12 @@
             });
         }
 
-        // --- EXPORT GLOBAL (Berlaku untuk Form Utama & Preview) ---
-        // Parameter 'elementId' agar bisa memilih mau export form utama atau modal preview
+        // --- EXPORT GLOBAL (Perbaikan: Menggunakan opsi useCORS dan allowTaint untuk logo eksternal) ---
         window.exportToImage = async (format, elementId, nameInputId) => {
             const el = document.getElementById(elementId);
             const fileName = document.getElementById(nameInputId).innerText || document.getElementById(nameInputId).value;
-            const canvas = await html2canvas(el, { scale: 3 }); 
+            // Ditambahkan useCORS & allowTaint agar logo & invoice no dirender sempurna
+            const canvas = await html2canvas(el, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: "#ffffff" }); 
             const link = document.createElement('a');
             link.download = `BC-REPORT-${fileName}.${format}`;
             link.href = canvas.toDataURL(`image/${format === 'jpeg' ? 'jpeg' : 'png'}`);
@@ -594,10 +602,12 @@
         window.exportToPDF = async (elementId, nameInputId) => {
             const el = document.getElementById(elementId);
             const fileName = document.getElementById(nameInputId).innerText || document.getElementById(nameInputId).value;
-            const canvas = await html2canvas(el, { scale: 2 });
-            const pdf = new jsPDF('l', 'mm', 'a4');
-            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 297, 210);
-            pdf.save(`BC-REPORT-${fileName}.pdf`); showToast("PDF disimpan!");
+            const canvas = await html2canvas(el, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: "#ffffff" });
+            
+            // Format PDF disesuaikan dengan kanvas baru: A5 Landscape (210mm x 148mm)
+            const pdf = new jsPDF('l', 'mm', 'a5');
+            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 148);
+            pdf.save(`BC-REPORT-${fileName}.pdf`); showToast("PDF berhasil dibuat!");
         }
 
         readUrlParameters();
